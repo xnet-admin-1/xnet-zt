@@ -76,4 +76,7 @@ public class StringUtils {
 
         return ipString + ":" + port;
     }
+    public static String etherTypeToString(int etherType) {
+        return String.format("0x%04X", etherType);
+    }
 }

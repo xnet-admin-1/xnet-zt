@@ -407,7 +407,7 @@ public class TunTapAdapter implements VirtualNetworkFrameListener {
                 " Network ID: " + StringUtils.networkIdToString(networkId) +
                 " Source MAC: " + StringUtils.macAddressToString(srcMac) +
                 " Dest MAC: " + StringUtils.macAddressToString(destMac) +
-                " Ether type: " + StringUtils.etherTypeToString(etherType) +
+                " Ether type: " + StringUtils.etherTypeToString((int)etherType) +
                 " VLAN ID: " + vlanId + " Frame Length: " + frameData.length);
         if (this.vpnSocket == null) {
             Log.e(TAG, "vpnSocket is null!");

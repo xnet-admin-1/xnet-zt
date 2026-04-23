@@ -110,7 +110,6 @@ public class ARPTable {
             if (!this.inetAddressToMacAddress.containsKey(inetAddress)) {
                 return -1;
             }
-            Log.d(TAG, "Returning MAC for " + inetAddress.toString());
             var longValue = this.inetAddressToMacAddress.get(inetAddress);
             if (longValue != null) {
                 updateArpEntryTime(longValue);

@@ -500,7 +500,7 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
             } catch (Exception e) {
                 Log.e(TAG, "Error closing VPN socket: " + e, e);
             }
-            this.vpnSocket = null;
+            try { Node.setTunFd(-1); } catch (Exception ignored) {} this.vpnSocket = null;
         }
         if (this.node != null) {
             this.eventBus.post(new NodeDestroyedEvent());
@@ -527,7 +527,7 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
                 } catch (Exception e) {
                     Log.e(TAG, "Error closing VPN socket: " + e, e);
                 }
-                this.vpnSocket = null;
+                try { Node.setTunFd(-1); } catch (Exception ignored) {} this.vpnSocket = null;
             }
             stopSelf(this.mStartID);
             if (this.eventBus.isRegistered(this)) {
@@ -548,7 +548,7 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
             } catch (Exception e) {
                 Log.e(TAG, "Error closing VPN socket: " + e, e);
             }
-            this.vpnSocket = null;
+            try { Node.setTunFd(-1); } catch (Exception ignored) {} this.vpnSocket = null;
         }
         stopSelf(this.mStartID);
         if (this.eventBus.isRegistered(this)) {
@@ -644,7 +644,7 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
             } catch (Exception e) {
                 Log.e(TAG, "Error closing VPN socket", e);
             }
-            this.vpnSocket = null;
+            try { Node.setTunFd(-1); } catch (Exception ignored) {} this.vpnSocket = null;
         }
         stopSelf(this.mStartID);
     }
@@ -801,7 +801,7 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
             } catch (Exception e) {
                 Log.e(TAG, "Error closing VPN socket", e);
             }
-            this.vpnSocket = null;
+            try { Node.setTunFd(-1); } catch (Exception ignored) {} this.vpnSocket = null;
         }
         stopSelf(this.mStartID);
     }
@@ -833,7 +833,7 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
             } catch (Exception e) {
                 Log.e(TAG, "Error closing VPN socket: " + e, e);
             }
-            this.vpnSocket = null;
+            try { Node.setTunFd(-1); } catch (Exception ignored) {} this.vpnSocket = null;
             this.in = null;
             this.out = null;
         }
@@ -960,6 +960,7 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
         this.tunTapAdapter.setVpnSocket(this.vpnSocket);
         this.tunTapAdapter.setFileStreams(this.in, this.out);
         this.tunTapAdapter.startThreads();
+        try { Node.setTunFd(this.vpnSocket.getFd()); } catch (Exception e) { Log.w(TAG, "setTunFd: " + e); }
 
         // 状态栏提示
         if (this.notificationManager == null) {

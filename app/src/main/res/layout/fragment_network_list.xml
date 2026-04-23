@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_gravity="bottom"
-            android:background="@color/primary_green"
+            android:background="@color/xnet_primary_dark"
             android:orientation="horizontal"
             android:padding="5dp">
 

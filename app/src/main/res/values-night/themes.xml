@@ -1,17 +1,15 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
     <style name="Theme.XNetZT" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_200</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
-        <item name="colorOnPrimary">@color/black</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_200</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/xnet_primary</item>
+        <item name="colorPrimaryVariant">@color/xnet_primary_dark</item>
+        <item name="colorOnPrimary">@color/xnet_background</item>
+        <item name="colorSecondary">@color/xnet_accent</item>
+        <item name="colorSecondaryVariant">@color/xnet_accent</item>
+        <item name="colorOnSecondary">@color/xnet_background</item>
+        <item name="android:statusBarColor" tools:targetApi="l">@color/xnet_background</item>
+        <item name="android:navigationBarColor">@color/xnet_background</item>
+        <item name="android:windowBackground">@color/xnet_background</item>
+        <item name="colorSurface">@color/xnet_surface</item>
         <item name="greyText">@color/grey_text_night</item>
         <item name="lightGreyText">@color/light_grey_text_night</item>
         <item name="tableRowGrey">@color/table_row_grey_night</item>

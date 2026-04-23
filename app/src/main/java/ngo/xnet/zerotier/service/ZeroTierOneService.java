@@ -989,7 +989,7 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(getString(R.string.notification_title_connected))
                 .setContentText(getString(R.string.notification_text_connected, network.getNetworkIdStr()))
-                .setColor(ContextCompat.getColor(getApplicationContext(), R.color.zerotier_orange))
+                .setColor(ContextCompat.getColor(getApplicationContext(), R.color.xnet_primary))
                 .setContentIntent(pendingIntent).build();
         startForeground(ZT_NOTIFICATION_TAG, notification);
         Log.i(TAG, "ZeroTier One Connected");

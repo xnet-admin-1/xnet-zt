@@ -109,55 +109,47 @@ public class TunTapAdapter implements VirtualNetworkFrameListener {
     }
 
     public void startThreads() {
-        this.receiveThread = new Thread("Tunnel Receive Thread") {
+        this.receiveThread = new Thread("TUN Receive Thread") {
 
             @Override
             public void run() {
-                // 创建 ARP、NDP 表
                 if (TunTapAdapter.this.ndpTable == null) {
                     TunTapAdapter.this.ndpTable = new NDPTable();
                 }
                 if (TunTapAdapter.this.arpTable == null) {
                     TunTapAdapter.this.arpTable = new ARPTable();
                 }
-                // 转发 TUN 消息至 Zerotier
                 try {
                     Log.d(TunTapAdapter.TAG, "TUN Receive Thread Started");
-                    var buffer = ByteBuffer.allocate(32767);
-                    buffer.order(ByteOrder.LITTLE_ENDIAN);
+                    byte[] buffer = new byte[65535];
                     while (!isInterrupted()) {
                         try {
-                            boolean noDataBeenRead = true;
-                            int readCount = TunTapAdapter.this.in.read(buffer.array());
+                            int readCount = TunTapAdapter.this.in.read(buffer);
                             if (readCount > 0) {
-                                DebugLog.d(TunTapAdapter.TAG, "Sending packet to ZeroTier. " + readCount + " bytes.");
-                                var readData = new byte[readCount];
-                                System.arraycopy(buffer.array(), 0, readData, 0, readCount);
+                                byte[] readData = new byte[readCount];
+                                System.arraycopy(buffer, 0, readData, 0, readCount);
                                 byte iPVersion = IPPacketUtils.getIPVersion(readData);
                                 if (iPVersion == 4) {
                                     TunTapAdapter.this.handleIPv4Packet(readData);
                                 } else if (iPVersion == 6) {
                                     TunTapAdapter.this.handleIPv6Packet(readData);
-                                } else {
-                                    Log.e(TunTapAdapter.TAG, "Unknown IP version");
                                 }
-                                buffer.clear();
-                                noDataBeenRead = false;
-                            }
-                            if (noDataBeenRead) {
-                                Thread.sleep(10);
+                            } else if (readCount < 0) {
+                                break;
                             }
                         } catch (IOException e) {
-                            Log.e(TunTapAdapter.TAG, "Error in TUN Receive: " + e.getMessage(), e);
+                            if (!isInterrupted()) {
+                                Log.e(TunTapAdapter.TAG, "Error in TUN Receive: " + e.getMessage(), e);
+                            }
+                            break;
                         }
                     }
-                } catch (InterruptedException ignored) {
+                } catch (Exception ignored) {
                 }
                 Log.d(TunTapAdapter.TAG, "TUN Receive Thread ended");
-                // 关闭 ARP、NDP 表
-                TunTapAdapter.this.ndpTable.stop();
+                if (TunTapAdapter.this.ndpTable != null) TunTapAdapter.this.ndpTable.stop();
                 TunTapAdapter.this.ndpTable = null;
-                TunTapAdapter.this.arpTable.stop();
+                if (TunTapAdapter.this.arpTable != null) TunTapAdapter.this.arpTable.stop();
                 TunTapAdapter.this.arpTable = null;
             }
         };
@@ -335,7 +327,6 @@ public class TunTapAdapter implements VirtualNetworkFrameListener {
             if (result != ResultCode.RESULT_OK) {
                 Log.e(TAG, "Error calling processVirtualNetworkFrame: " + result.toString());
             } else {
-                DebugLog.d(TAG, "Packet sent to ZT");
                 this.ztService.setNextBackgroundTaskDeadline(nextDeadline[0]);
             }
         }
@@ -399,12 +390,6 @@ public class TunTapAdapter implements VirtualNetworkFrameListener {
     @Override
     public void onVirtualNetworkFrame(long networkId, long srcMac, long destMac, long etherType,
                                       long vlanId, byte[] frameData) {
-        DebugLog.d(TAG, "Got Virtual Network Frame. " +
-                " Network ID: " + StringUtils.networkIdToString(networkId) +
-                " Source MAC: " + StringUtils.macAddressToString(srcMac) +
-                " Dest MAC: " + StringUtils.macAddressToString(destMac) +
-                " Ether type: " + StringUtils.etherTypeToString(etherType) +
-                " VLAN ID: " + vlanId + " Frame Length: " + frameData.length);
         if (this.vpnSocket == null) {
             Log.e(TAG, "vpnSocket is null!");
         } else if (this.in == null || this.out == null) {
@@ -442,7 +427,6 @@ public class TunTapAdapter implements VirtualNetworkFrameListener {
             }
         } else if (etherType == IPV4_PACKET) {
             // 收到 IPv4 包。根据需要发送至 TUN
-            DebugLog.d(TAG, "Got IPv4 packet. Length: " + frameData.length + " Bytes");
             try {
                 var sourceIP = IPPacketUtils.getSourceIP(frameData);
                 if (sourceIP != null) {
@@ -461,7 +445,6 @@ public class TunTapAdapter implements VirtualNetworkFrameListener {
             }
         } else if (etherType == IPV6_PACKET) {
             // 收到 IPv6 包。根据需要发送至 TUN，并更新 NDP 表
-            DebugLog.d(TAG, "Got IPv6 packet. Length: " + frameData.length + " Bytes");
             try {
                 var sourceIP = IPPacketUtils.getSourceIP(frameData);
                 if (sourceIP != null) {

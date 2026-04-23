@@ -5,12 +5,12 @@ plugins {
 
 greendao {
     schemaVersion 22
-    daoPackage 'net.kaaass.zerotierfix.model'
+    daoPackage 'ngo.xnet.zerotier.model'
 }
 
 android {
     compileSdk 34
-    namespace 'net.kaaass.zerotierfix'
+    namespace 'ngo.xnet.zerotier'
 
     buildFeatures {
         buildConfig true

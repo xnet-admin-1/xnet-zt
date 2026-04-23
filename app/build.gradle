@@ -9,25 +9,48 @@ greendao {
 }
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
+    compileSdk 34
+    namespace 'net.kaaass.zerotierfix'
+
+    buildFeatures {
+        buildConfig true
+    }
 
     defaultConfig {
-        applicationId "net.kaaass.zerotierfix"
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 14
-        versionName "1.0.10"
+        applicationId "ngo.xnet.zerotier"
+        minSdk 24
+        targetSdk 34
+        versionCode 200
+        versionName "2.0.0-xnet.2"
         multiDexEnabled true
 
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+
+        ndk {
+            abiFilters "arm64-v8a"
+        }
+
+        externalNativeBuild {
+            cmake {
+                cppFlags "-fexceptions", "-frtti", "-DZT_NO_TYPE_PUNNING=1"
+            }
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path "../externals/core/java/CMakeLists.txt"
+            version "3.22.1"
+        }
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
@@ -40,31 +63,29 @@ android {
             exclude module: 'commons-logging'
         }
     }
-    namespace 'net.kaaass.zerotierfix'
 }
 
 dependencies {
     implementation project(':core')
 
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'com.google.android.material:material:1.11.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.navigation:navigation-fragment:2.5.3'
-    implementation 'androidx.navigation:navigation-ui:2.5.3'
-    implementation 'androidx.preference:preference:1.2.0'
+    implementation 'androidx.navigation:navigation-fragment:2.7.7'
+    implementation 'androidx.navigation:navigation-ui:2.7.7'
+    implementation 'androidx.preference:preference:1.2.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.recyclerview:recyclerview:1.3.0'
+    implementation 'androidx.recyclerview:recyclerview:1.3.2'
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
-    implementation 'commons-io:commons-io:2.11.0'
+    implementation 'commons-io:commons-io:2.15.1'
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs_nio:2.0.4'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     implementation 'org.greenrobot:greendao:3.3.0'
-    implementation 'org.greenrobot:eventbus:3.2.0'
+    implementation 'org.greenrobot:eventbus:3.3.1'
     implementation 'commons-validator:commons-validator:1.7'
     implementation "androidx.multidex:multidex:2.0.1"
-    //noinspection AnnotationProcessorOnCompilePath
-    compileOnly 'org.projectlombok:lombok:1.18.20'
-    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
 }

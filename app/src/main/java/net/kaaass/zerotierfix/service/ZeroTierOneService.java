@@ -266,6 +266,21 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
     public int onStartCommand(Intent intent, int flags, int startId) {
         long networkId;
         Log.d(TAG, "onStartCommand");
+
+        // Must call startForeground immediately on Android 14+
+        if (Build.VERSION.SDK_INT >= 26) {
+            var nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            var channel = new NotificationChannel(
+                    Constants.CHANNEL_ID, "ZeroTier", NotificationManager.IMPORTANCE_LOW);
+            nm.createNotificationChannel(channel);
+            var notification = new NotificationCompat.Builder(this, Constants.CHANNEL_ID)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentTitle("XNet ZeroTier")
+                    .setContentText("Connecting...")
+                    .build();
+            startForeground(ZT_NOTIFICATION_TAG, notification);
+        }
+
         if (startId == 3) {
             Log.i(TAG, "Authorizing VPN");
             return START_NOT_STICKY;
@@ -399,6 +414,19 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
                     var thread = new Thread(this.udpCom, "UDP Communication Thread");
                     this.udpThread = thread;
                     thread.start();
+
+                    // Auto-orbit xnet moon for independent infrastructure
+                    try {
+                        var moonDao = ((ZerotierFixApplication) getApplication())
+                                .getDaoSession().getMoonOrbitDao();
+                        var moons = moonDao.queryBuilder().build().forCurrentThread().list();
+                        for (MoonOrbit moon : moons) {
+                            Log.i(TAG, "Auto-orbiting moon: " + Long.toHexString(moon.getMoonWorldId()));
+                            this.node.orbit(moon.getMoonWorldId(), moon.getMoonSeed());
+                        }
+                    } catch (Exception e) {
+                        Log.w(TAG, "Moon auto-orbit: " + e.getMessage());
+                    }
                 }
 
                 // 创建并启动 VPN 服务线程
@@ -483,7 +511,7 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
             this.eventBus.unregister(this);
         }
         if (this.notificationManager != null) {
-            this.notificationManager.cancel(ZT_NOTIFICATION_TAG);
+            stopForeground(STOP_FOREGROUND_REMOVE);
         }
         if (!stopSelfResult(this.mStartID)) {
             Log.e(TAG, "stopSelfResult() failed!");
@@ -963,7 +991,7 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
                 .setContentText(getString(R.string.notification_text_connected, network.getNetworkIdStr()))
                 .setColor(ContextCompat.getColor(getApplicationContext(), R.color.zerotier_orange))
                 .setContentIntent(pendingIntent).build();
-        this.notificationManager.notify(ZT_NOTIFICATION_TAG, notification);
+        startForeground(ZT_NOTIFICATION_TAG, notification);
         Log.i(TAG, "ZeroTier One Connected");
 
         // 旧版本 Android 多播处理

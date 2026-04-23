@@ -1,15 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="@string/planet_settings">
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="planet_use_custom"
-            android:summary="@string/planet_use_custom_summary"
-            android:title="@string/use_custom_planet" />
-        <Preference
-            android:key="set_planet_file"
-            android:title="@string/set_planet_file" />
-    </PreferenceCategory>
     <PreferenceCategory android:title="@string/preferences_network">
         <CheckBoxPreference
             android:defaultValue="false"

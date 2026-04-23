@@ -15,7 +15,7 @@ public class FileUtil {
      * 清理临时文件
      */
     public static File tempFile(Context context) {
-        return new File(context.getCacheDir(), Constants.FILE_TEMP);
+        return new File(context.getCacheDir(), "temp");
     }
 
     /**

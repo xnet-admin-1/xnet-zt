@@ -489,7 +489,7 @@ public class NetworkListFragment extends Fragment {
         var intent = new Intent(requireActivity(), ZeroTierOneService.class);
         intent.putExtra(ZeroTierOneService.ZT1_NETWORK_ID, networkId);
         doBindService();
-        requireActivity().startService(intent);
+        requireActivity().startForegroundService(intent);
     }
 
     /**

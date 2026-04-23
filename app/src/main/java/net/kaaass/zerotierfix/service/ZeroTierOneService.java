@@ -223,9 +223,6 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
         synchronized (this.virtualNetworkConfigMap) {
             put = this.virtualNetworkConfigMap.put(Long.valueOf(j), virtualNetworkConfig);
         }
-        if (this.tunTapAdapter != null) {
-            this.tunTapAdapter.refreshCachedConfig();
-        }
         return put;
     }
 

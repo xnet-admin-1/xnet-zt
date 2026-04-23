@@ -44,14 +44,6 @@ public class TunTapAdapter implements VirtualNetworkFrameListener {
     private Thread receiveThread;
     private ParcelFileDescriptor vpnSocket;
 
-    // Cached per-connection values to avoid per-packet JNI/alloc overhead
-    private volatile long cachedLocalMac;
-    private volatile InetAddress cachedLocalV4;
-    private volatile InetAddress cachedLocalV6;
-    private volatile int cachedV4Cidr;
-    private volatile int cachedV6Cidr;
-    private final long[] reusableDeadline = new long[1];
-
     public TunTapAdapter(ZeroTierOneService zeroTierOneService, long j) {
         this.ztService = zeroTierOneService;
         this.networkId = j;
@@ -93,21 +85,6 @@ public class TunTapAdapter implements VirtualNetworkFrameListener {
     public void setFileStreams(FileInputStream fileInputStream, FileOutputStream fileOutputStream) {
         this.in = fileInputStream;
         this.out = fileOutputStream;
-    }
-
-    public void refreshCachedConfig() {
-        var config = this.ztService.getVirtualNetworkConfig(this.networkId);
-        if (config == null) return;
-        this.cachedLocalMac = config.getMac();
-        for (var addr : config.getAssignedAddresses()) {
-            if (addr.getAddress() instanceof Inet4Address) {
-                this.cachedLocalV4 = addr.getAddress();
-                this.cachedV4Cidr = addr.getPort();
-            } else if (addr.getAddress() instanceof Inet6Address) {
-                this.cachedLocalV6 = addr.getAddress();
-                this.cachedV6Cidr = addr.getPort();
-            }
-        }
     }
 
     public void addRouteAndNetwork(Route route, long networkId) {
@@ -180,104 +157,194 @@ public class TunTapAdapter implements VirtualNetworkFrameListener {
     }
 
     private void handleIPv4Packet(byte[] packetData) {
-        long localMac = this.cachedLocalMac;
-        InetAddress localV4 = this.cachedLocalV4;
-        if (localMac == 0 || localV4 == null) {
-            refreshCachedConfig();
-            localMac = this.cachedLocalMac;
-            localV4 = this.cachedLocalV4;
-            if (localMac == 0 || localV4 == null) return;
-        }
-
+        boolean isMulticast;
+        long destMac;
         var destIP = IPPacketUtils.getDestIP(packetData);
-        if (destIP == null) return;
+        var sourceIP = IPPacketUtils.getSourceIP(packetData);
+        var virtualNetworkConfig = this.ztService.getVirtualNetworkConfig(this.networkId);
 
-        boolean isMulticast = isIPv4Multicast(destIP);
-        if (isMulticast) {
-            this.node.multicastSubscribe(this.networkId, multicastAddressToMAC(destIP));
+        if (virtualNetworkConfig == null) {
+            Log.e(TAG, "TunTapAdapter has no network config yet");
+            return;
+        } else if (destIP == null) {
+            Log.e(TAG, "destAddress is null");
+            return;
+        } else if (sourceIP == null) {
+            Log.e(TAG, "sourceAddress is null");
+            return;
         }
-
+        if (isIPv4Multicast(destIP)) {
+            var result = this.node.multicastSubscribe(this.networkId, multicastAddressToMAC(destIP));
+            if (result != ResultCode.RESULT_OK) {
+                Log.e(TAG, "Error when calling multicastSubscribe: " + result);
+            }
+            isMulticast = true;
+        } else {
+            isMulticast = false;
+        }
         var route = routeForDestination(destIP);
         var gateway = route != null ? route.getGateway() : null;
-        if (gateway != null) {
-            var sourceIP = IPPacketUtils.getSourceIP(packetData);
-            if (sourceIP != null) {
-                var destRoute = InetAddressUtils.addressToRouteNo0Route(destIP, this.cachedV4Cidr);
-                var sourceRoute = InetAddressUtils.addressToRouteNo0Route(sourceIP, this.cachedV4Cidr);
-                if (!Objects.equals(destRoute, sourceRoute)) {
-                    destIP = gateway;
-                }
+
+        // 查找当前节点的 v4 地址
+        var ztAddresses = virtualNetworkConfig.getAssignedAddresses();
+        InetAddress localV4Address = null;
+        int cidr = 0;
+
+        for (var address : ztAddresses) {
+            if (address.getAddress() instanceof Inet4Address) {
+                localV4Address = address.getAddress();
+                cidr = address.getPort();
+                break;
             }
         }
 
-        long destMac;
-        if (isMulticast) {
-            destMac = multicastAddressToMAC(destIP);
-        } else if (this.arpTable.hasMacForAddress(destIP)) {
-            destMac = this.arpTable.getMacForAddress(destIP);
-        } else {
-            destMac = InetAddressUtils.BROADCAST_MAC_ADDRESS;
-            packetData = this.arpTable.getRequestPacket(localMac, localV4, destIP);
-            this.node.processVirtualNetworkFrame(System.currentTimeMillis(), this.networkId, localMac, destMac, ARP_PACKET, 0, packetData, this.reusableDeadline);
-            this.ztService.setNextBackgroundTaskDeadline(this.reusableDeadline[0]);
+        var destRoute = InetAddressUtils.addressToRouteNo0Route(destIP, cidr);
+        var sourceRoute = InetAddressUtils.addressToRouteNo0Route(sourceIP, cidr);
+        if (gateway != null && !Objects.equals(destRoute, sourceRoute)) {
+            destIP = gateway;
+        }
+        if (localV4Address == null) {
+            Log.e(TAG, "Couldn't determine local address");
             return;
         }
-        this.node.processVirtualNetworkFrame(System.currentTimeMillis(), this.networkId, localMac, destMac, IPV4_PACKET, 0, packetData, this.reusableDeadline);
-        this.ztService.setNextBackgroundTaskDeadline(this.reusableDeadline[0]);
+
+        long localMac = virtualNetworkConfig.getMac();
+        long[] nextDeadline = new long[1];
+        if (isMulticast || this.arpTable.hasMacForAddress(destIP)) {
+            // 已确定目标 MAC，直接发送
+            if (isIPv4Multicast(destIP)) {
+                destMac = multicastAddressToMAC(destIP);
+            } else {
+                destMac = this.arpTable.getMacForAddress(destIP);
+            }
+            var result = this.node.processVirtualNetworkFrame(System.currentTimeMillis(), this.networkId, localMac, destMac, IPV4_PACKET, 0, packetData, nextDeadline);
+            if (result != ResultCode.RESULT_OK) {
+                Log.e(TAG, "Error calling processVirtualNetworkFrame: " + result.toString());
+                return;
+            }
+            this.ztService.setNextBackgroundTaskDeadline(nextDeadline[0]);
+        } else {
+            // 目标 MAC 未知，进行 ARP 查询
+            Log.d(TAG, "Unknown dest MAC address.  Need to look it up. " + destIP);
+            destMac = InetAddressUtils.BROADCAST_MAC_ADDRESS;
+            packetData = this.arpTable.getRequestPacket(localMac, localV4Address, destIP);
+            var result = this.node.processVirtualNetworkFrame(System.currentTimeMillis(), this.networkId, localMac, destMac, ARP_PACKET, 0, packetData, nextDeadline);
+            if (result != ResultCode.RESULT_OK) {
+                Log.e(TAG, "Error sending ARP packet: " + result.toString());
+                return;
+            }
+            Log.d(TAG, "ARP Request Sent!");
+            this.ztService.setNextBackgroundTaskDeadline(nextDeadline[0]);
+        }
     }
 
     private void handleIPv6Packet(byte[] packetData) {
-        long localMac = this.cachedLocalMac;
-        if (localMac == 0) {
-            refreshCachedConfig();
-            localMac = this.cachedLocalMac;
-            if (localMac == 0) return;
-        }
-
         var destIP = IPPacketUtils.getDestIP(packetData);
-        if (destIP == null) return;
         var sourceIP = IPPacketUtils.getSourceIP(packetData);
-        if (sourceIP == null) return;
+        var virtualNetworkConfig = this.ztService.getVirtualNetworkConfig(this.networkId);
 
-        if (this.isIPv6Multicast(destIP)) {
-            this.node.multicastSubscribe(this.networkId, multicastAddressToMAC(destIP));
+        if (virtualNetworkConfig == null) {
+            Log.e(TAG, "TunTapAdapter has no network config yet");
+            return;
+        } else if (destIP == null) {
+            Log.e(TAG, "destAddress is null");
+            return;
+        } else if (sourceIP == null) {
+            Log.e(TAG, "sourceAddress is null");
+            return;
         }
-
+        if (this.isIPv6Multicast(destIP)) {
+            var result = this.node.multicastSubscribe(this.networkId, multicastAddressToMAC(destIP));
+            if (result != ResultCode.RESULT_OK) {
+                Log.e(TAG, "Error when calling multicastSubscribe: " + result);
+            }
+        }
         var route = routeForDestination(destIP);
         var gateway = route != null ? route.getGateway() : null;
-        if (gateway != null) {
-            var destRoute = InetAddressUtils.addressToRouteNo0Route(destIP, this.cachedV6Cidr);
-            var sourceRoute = InetAddressUtils.addressToRouteNo0Route(sourceIP, this.cachedV6Cidr);
-            if (!Objects.equals(destRoute, sourceRoute)) {
-                destIP = gateway;
+
+        // 查找当前节点的 v6 地址
+        var ztAddresses = virtualNetworkConfig.getAssignedAddresses();
+        InetAddress localV4Address = null;
+        int cidr = 0;
+
+        for (var address : ztAddresses) {
+            if (address.getAddress() instanceof Inet6Address) {
+                localV4Address = address.getAddress();
+                cidr = address.getPort();
+                break;
             }
         }
 
+        var destRoute = InetAddressUtils.addressToRouteNo0Route(destIP, cidr);
+        var sourceRoute = InetAddressUtils.addressToRouteNo0Route(sourceIP, cidr);
+        if (gateway != null && !Objects.equals(destRoute, sourceRoute)) {
+            destIP = gateway;
+        }
+        if (localV4Address == null) {
+            Log.e(TAG, "Couldn't determine local address");
+            return;
+        }
+
+        long localMac = virtualNetworkConfig.getMac();
+        long[] nextDeadline = new long[1];
+
+        // 确定目标 MAC 地址
         long destMac;
         boolean sendNSPacket = false;
         if (this.isNeighborSolicitation(packetData)) {
-            destMac = this.ndpTable.hasMacForAddress(destIP) ?
-                    this.ndpTable.getMacForAddress(destIP) : InetAddressUtils.ipv6ToMulticastAddress(destIP);
+            // 收到本地 NS 报文，根据 NDP 表记录确定是否广播查询
+            if (this.ndpTable.hasMacForAddress(destIP)) {
+                destMac = this.ndpTable.getMacForAddress(destIP);
+            } else {
+                destMac = InetAddressUtils.ipv6ToMulticastAddress(destIP);
+            }
         } else if (this.isIPv6Multicast(destIP)) {
+            // 多播报文
             destMac = multicastAddressToMAC(destIP);
         } else if (this.isNeighborAdvertisement(packetData)) {
-            destMac = this.ndpTable.hasMacForAddress(destIP) ? this.ndpTable.getMacForAddress(destIP) : 0L;
+            // 收到本地 NA 报文
+            if (this.ndpTable.hasMacForAddress(destIP)) {
+                destMac = this.ndpTable.getMacForAddress(destIP);
+            } else {
+                // 目标 MAC 未知，不发送数据包
+                destMac = 0L;
+            }
             sendNSPacket = true;
         } else {
-            destMac = this.ndpTable.hasMacForAddress(destIP) ? this.ndpTable.getMacForAddress(destIP) : 0L;
-            if (destMac == 0L) sendNSPacket = true;
+            // 收到普通数据包，根据 NDP 表记录确定是否发送 NS 请求
+            if (this.ndpTable.hasMacForAddress(destIP)) {
+                // 目标地址 MAC 已知
+                destMac = this.ndpTable.getMacForAddress(destIP);
+            } else {
+                destMac = 0L;
+                sendNSPacket = true;
+            }
+        }
+        // 发送数据包
+        if (destMac != 0L) {
+            var result = this.node.processVirtualNetworkFrame(System.currentTimeMillis(), this.networkId, localMac, destMac, IPV6_PACKET, 0, packetData, nextDeadline);
+            if (result != ResultCode.RESULT_OK) {
+                Log.e(TAG, "Error calling processVirtualNetworkFrame: " + result.toString());
+            } else {
+                this.ztService.setNextBackgroundTaskDeadline(nextDeadline[0]);
+            }
+        }
+        // 发送 NS 请求
+        if (sendNSPacket) {
+            if (destMac == 0L) {
+                destMac = InetAddressUtils.ipv6ToMulticastAddress(destIP);
+            }
+            Log.d(TAG, "Sending Neighbor Solicitation");
+            packetData = this.ndpTable.getNeighborSolicitationPacket(sourceIP, destIP, localMac);
+            var result = this.node.processVirtualNetworkFrame(System.currentTimeMillis(), this.networkId, localMac, destMac, IPV6_PACKET, 0, packetData, nextDeadline);
+            if (result != ResultCode.RESULT_OK) {
+                Log.e(TAG, "Error calling processVirtualNetworkFrame: " + result.toString());
+            } else {
+                Log.d(TAG, "Neighbor Solicitation sent to ZT");
+                this.ztService.setNextBackgroundTaskDeadline(nextDeadline[0]);
+            }
         }
 
-        if (destMac != 0L) {
-            this.node.processVirtualNetworkFrame(System.currentTimeMillis(), this.networkId, localMac, destMac, IPV6_PACKET, 0, packetData, this.reusableDeadline);
-            this.ztService.setNextBackgroundTaskDeadline(this.reusableDeadline[0]);
-        }
-        if (sendNSPacket) {
-            if (destMac == 0L) destMac = InetAddressUtils.ipv6ToMulticastAddress(destIP);
-            packetData = this.ndpTable.getNeighborSolicitationPacket(sourceIP, destIP, localMac);
-            this.node.processVirtualNetworkFrame(System.currentTimeMillis(), this.networkId, localMac, destMac, IPV6_PACKET, 0, packetData, this.reusableDeadline);
-            this.ztService.setNextBackgroundTaskDeadline(this.reusableDeadline[0]);
-        }
     }
 
     public void interrupt() {

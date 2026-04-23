@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/planet_settings">
+        <Preference
+            android:key="load_planet_file"
+            android:title="@string/load_planet_file"
+            android:summary="@string/load_planet_summary" />
+        <Preference
+            android:key="load_planet_url"
+            android:title="@string/enter_planet_file_url"
+            android:summary="@string/load_planet_summary" />
+        <Preference
+            android:key="reset_planet"
+            android:title="@string/reset_planet"
+            android:summary="Restore the default xnet planet" />
+    </PreferenceCategory>
     <PreferenceCategory android:title="@string/preferences_network">
         <CheckBoxPreference
             android:defaultValue="false"

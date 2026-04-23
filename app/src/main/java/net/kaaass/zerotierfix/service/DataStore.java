@@ -14,7 +14,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
- * ZeroTier file data store. Serves the mars file when the core requests it.
+ * ZeroTier file data store. Serves the custom planet (mars) when the core requests "planet".
  */
 public class DataStore implements DataStoreGetListener, DataStorePutListener {
 
@@ -27,9 +27,14 @@ public class DataStore implements DataStoreGetListener, DataStorePutListener {
 
     @Override
     public int onDataStorePut(String name, byte[] buffer, boolean secure) {
-        Log.d(TAG, "Writing File: " + name + ", to: " + context.getFilesDir());
+        // Block writes to "planet" so the stock planet never overwrites mars
+        if ("planet".equals(name)) {
+            Log.d(TAG, "Blocked write to planet (using mars)");
+            return 0;
+        }
+        Log.d(TAG, "Writing File: " + name);
         try {
-            File target = resolveFile(name);
+            File target = new File(context.getFilesDir(), name);
             target.getParentFile().mkdirs();
             try (var out = new FileOutputStream(target)) {
                 out.write(buffer);
@@ -43,29 +48,23 @@ public class DataStore implements DataStoreGetListener, DataStorePutListener {
 
     @Override
     public int onDelete(String name) {
-        Log.d(TAG, "Deleting File: " + name);
-        File f = resolveFile(name);
+        if ("planet".equals(name)) return 0;
+        File f = new File(context.getFilesDir(), name);
         return (!f.exists() || f.delete()) ? 0 : 1;
     }
 
     @Override
     public long onDataStoreGet(String name, byte[] out_buffer) {
-        // Serve mars file when core asks for it
-        if (Constants.FILE_MARS.equals(name)) {
+        // When core asks for "planet", serve our mars file instead
+        if ("planet".equals(name)) {
             File mars = new File(context.getFilesDir(), Constants.FILE_MARS);
             if (mars.exists()) {
-                Log.d(TAG, "Serving mars file");
+                Log.d(TAG, "Serving mars as planet");
                 return readFileInto(mars, out_buffer);
             }
+            Log.w(TAG, "Core asked for planet but mars not found");
         }
-        return readFileInto(resolveFile(name), out_buffer);
-    }
-
-    private File resolveFile(String name) {
-        if (name.contains("/")) {
-            return new File(context.getFilesDir(), name);
-        }
-        return new File(context.getFilesDir(), name);
+        return readFileInto(new File(context.getFilesDir(), name), out_buffer);
     }
 
     private long readFileInto(File file, byte[] buffer) {

@@ -1,11 +1,11 @@
 <resources>
-    <string name="app_name">Zerotier Fix</string>
+    <string name="app_name">XNet-ZT</string>
 
     <string name="button_connect">Connect</string>
     <string name="button_disconnect">Disconnect</string>
     <string name="custom_dns">DNS Servers</string>
     <string name="custom_dns_tab_title">Custom DNS</string>
-    <string name="default_route">Route all traffic through ZeroTier. (Requires external configuration of the network)</string>
+    <string name="default_route">Route all traffic through XNet-ZT. (Requires external configuration of the network)</string>
     <string name="delete_network">Delete</string>
     <string name="device_label">Device:</string>
     <string name="dns_label_string">DNS</string>
@@ -20,7 +20,7 @@
     <string name="menu_join_network">Add Network</string>
     <string name="network_bridging">Bridging</string>
     <string name="network_broadcast">Broadcast</string>
-    <string name="network_default_route">Route Via ZeroTier</string>
+    <string name="network_default_route">Route Via XNet-ZT</string>
     <string name="network_dns_tab_title">Network DNS</string>
     <string name="network_dns_text">DNS configuration managed by network controller.</string>
     <string name="network_id">Network ID:</string>
@@ -53,7 +53,7 @@
     <string name="no_dns_text">DNS settings will not be configured.</string>
     <string name="planet_settings">Planet Settings</string>
     <string name="preferences_general">General Settings</string>
-    <string name="preferences_general_start_on_boot">Start ZeroTier Fix on Device Startup</string>
+    <string name="preferences_general_start_on_boot">Start XNet-ZT on Device Startup</string>
     <string name="preferences_network">Network Settings</string>
     <string name="preferences_network_auto_rejoin">Automatically Re-join Networks on Start</string>
     <string name="preferences_network_disable_ipv6">Disable IPv6</string>
@@ -62,12 +62,12 @@
     <string name="reset_planet">Reset Planet</string>
     <string name="settings">Settings</string>
     <string name="status_label">Status:</string>
-    <string name="title_activity_zero_tier_one__main">ZeroTier Fix</string>
+    <string name="title_activity_zero_tier_one__main">XNet-ZT</string>
     <string name="use_custom_dns">Use Custom DNS Servers</string>
     <string name="status_offline">OFFLINE</string>
     <string name="status_online">ONLINE</string>
-    <string name="toast_no_network">No Network Connectivity.  ZeroTier cannot start.</string>
-    <string name="toast_mobile_data">Currently using mobile data.  Enable \"Use Cellular Data\" in order to start ZeroTier.</string>
+    <string name="toast_no_network">No Network Connectivity.  XNet-ZT cannot start.</string>
+    <string name="toast_mobile_data">Currently using mobile data.  Enable \"Use Cellular Data\" in order to start XNet-ZT.</string>
     <string name="menu_peers">Peers</string>
     <string name="menu_orbit">Orbit</string>
     <string name="enabled">Enabled</string>
@@ -124,7 +124,7 @@
     <string name="planet_wrong_format">Wrong planet file format</string>
     <string name="downloading">Downloading</string>
     <string name="planet_download_timeout">Timeout when downloading planet file</string>
-    <string name="planet_use_custom_summary">Allows you to bypass Zerotier official network. Reconnect for this setting to take effect.</string>
+    <string name="planet_use_custom_summary">Allows you to use a custom planet server. Reconnect for this setting to take effect.</string>
     <string name="import_via_orbit">Import via Orbit</string>
     <string name="import_moon_node">Import Moon node</string>
     <string name="wait_to_fetch">Wait to fetch</string>
@@ -133,7 +133,7 @@
     <string name="external_file">External file</string>
     <string name="cached">Cached</string>
     <string name="moon_wrong_file_format">Wrong moon file format</string>
-    <string name="moon_world_id_hint">Zerotier address of Moon node. Also filename of its moon file.</string>
+    <string name="moon_world_id_hint">Network address of Moon node. Also filename of its moon file.</string>
     <string name="cached_moon_file_delete">Cached moon file deleted. Reconnect for this setting to take effect.</string>
     <string name="channel_name">Connection Status Notify</string>
     <string name="channel_description">Connection Status</string>
@@ -149,7 +149,7 @@
     <string name="toast_vpn_error">A VPN service error has occurred! %1$s</string>
     <string name="empty_network_name">Unknown</string>
     <string name="app_version_format">(APP: %s)</string>
-    <string name="dialog_no_notification_alert_text">Zerotier Fix does not have notification permissions! You might miss notification pop-ups and status bar messages that indicate connection status. Zerotier Fix recommends you enable notification permissions for the app to receive connection status information. If you don\'t want to see persistent notifications in the status bar, you can still turn off messages for that notification category after enabling the permissions.</string>
+    <string name="dialog_no_notification_alert_text">XNet-ZT does not have notification permissions! You might miss notification pop-ups and status bar messages that indicate connection status. XNet-ZT recommends you enable notification permissions for the app to receive connection status information. If you don\'t want to see persistent notifications in the status bar, you can still turn off messages for that notification category after enabling the permissions.</string>
     <string name="dialog_no_notification_alert_title">Notification Permission Not Granted</string>
     <string name="open_notification_settings">Goto notification settings</string>
     <string name="dont_show_again">Don\'t show again</string>

@@ -271,11 +271,11 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
         if (Build.VERSION.SDK_INT >= 26) {
             var nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             var channel = new NotificationChannel(
-                    Constants.CHANNEL_ID, "ZeroTier", NotificationManager.IMPORTANCE_LOW);
+                    Constants.CHANNEL_ID, "XNet-ZT", NotificationManager.IMPORTANCE_LOW);
             nm.createNotificationChannel(channel);
             var notification = new NotificationCompat.Builder(this, Constants.CHANNEL_ID)
                     .setSmallIcon(R.mipmap.ic_launcher)
-                    .setContentTitle("XNet ZeroTier")
+                    .setContentTitle("XNet-ZT")
                     .setContentText("Connecting...")
                     .build();
             startForeground(ZT_NOTIFICATION_TAG, notification);

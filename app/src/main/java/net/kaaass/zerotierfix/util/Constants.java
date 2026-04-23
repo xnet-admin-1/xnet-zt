@@ -6,6 +6,6 @@ public class Constants {
     public static final String PREF_GENERAL_START_ZEROTIER_ON_BOOT = "general_start_zerotier_on_boot";
     public static final String PREF_DISABLE_NO_NOTIFICATION_ALERT = "disable_no_notification_alert";
     public static final String FILE_MARS = "mars";
-    public static final String CHANNEL_ID = "ZerotierFix";
-    public static final String VPN_SESSION_NAME = "ZerotierFix";
+    public static final String CHANNEL_ID = "XNet-ZT";
+    public static final String VPN_SESSION_NAME = "XNet-ZT";
 }

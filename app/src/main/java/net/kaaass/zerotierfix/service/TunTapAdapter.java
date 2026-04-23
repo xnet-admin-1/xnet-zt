@@ -108,56 +108,54 @@ public class TunTapAdapter implements VirtualNetworkFrameListener {
         return (inetAddress.getAddress()[0] & 0xFF) == 0xFF;
     }
 
-    public void startThreads() {
-        this.receiveThread = new Thread("Tunnel Receive Thread") {
+    private static native void startNativeForwarder(int tunFd, long nodeId, long nwid, long localMac);
+    private static native void stopNativeForwarder();
 
+    static {
+        // Library already loaded by Node class
+    }
+
+    public void startThreads() {
+        // Native RX path (ZT→tun) - bypasses Java for incoming packets
+        if (this.vpnSocket != null) {
+            try {
+                int fd = this.vpnSocket.getFd();
+                startNativeForwarder(fd, 0, this.networkId, 0);
+                Log.d(TAG, "Native RX forwarder started fd=" + fd);
+            } catch (Exception e) {
+                Log.e(TAG, "Native RX failed: " + e.getMessage());
+            }
+        }
+
+        // Java TX path (tun→ZT) - handles ARP/NDP
+        this.receiveThread = new Thread("TUN TX Thread") {
             @Override
             public void run() {
-                // 创建 ARP、NDP 表
-                if (TunTapAdapter.this.ndpTable == null) {
-                    TunTapAdapter.this.ndpTable = new NDPTable();
-                }
-                if (TunTapAdapter.this.arpTable == null) {
-                    TunTapAdapter.this.arpTable = new ARPTable();
-                }
-                // 转发 TUN 消息至 Zerotier
+                if (TunTapAdapter.this.ndpTable == null) TunTapAdapter.this.ndpTable = new NDPTable();
+                if (TunTapAdapter.this.arpTable == null) TunTapAdapter.this.arpTable = new ARPTable();
                 try {
-                    Log.d(TunTapAdapter.TAG, "TUN Receive Thread Started");
-                    var buffer = ByteBuffer.allocate(32767);
-                    buffer.order(ByteOrder.LITTLE_ENDIAN);
+                    Log.d(TunTapAdapter.TAG, "TUN TX Thread Started");
+                    byte[] buffer = new byte[65535];
                     while (!isInterrupted()) {
                         try {
-                            boolean noDataBeenRead = true;
-                            int readCount = TunTapAdapter.this.in.read(buffer.array());
+                            int readCount = TunTapAdapter.this.in.read(buffer);
                             if (readCount > 0) {
-                                DebugLog.d(TunTapAdapter.TAG, "Sending packet to ZeroTier. " + readCount + " bytes.");
-                                var readData = new byte[readCount];
-                                System.arraycopy(buffer.array(), 0, readData, 0, readCount);
+                                byte[] readData = new byte[readCount];
+                                System.arraycopy(buffer, 0, readData, 0, readCount);
                                 byte iPVersion = IPPacketUtils.getIPVersion(readData);
-                                if (iPVersion == 4) {
-                                    TunTapAdapter.this.handleIPv4Packet(readData);
-                                } else if (iPVersion == 6) {
-                                    TunTapAdapter.this.handleIPv6Packet(readData);
-                                } else {
-                                    Log.e(TunTapAdapter.TAG, "Unknown IP version");
-                                }
-                                buffer.clear();
-                                noDataBeenRead = false;
-                            }
-                            if (noDataBeenRead) {
-                                Thread.sleep(10);
-                            }
+                                if (iPVersion == 4) TunTapAdapter.this.handleIPv4Packet(readData);
+                                else if (iPVersion == 6) TunTapAdapter.this.handleIPv6Packet(readData);
+                            } else if (readCount < 0) break;
                         } catch (IOException e) {
-                            Log.e(TunTapAdapter.TAG, "Error in TUN Receive: " + e.getMessage(), e);
+                            if (!isInterrupted()) Log.e(TunTapAdapter.TAG, "TUN TX error: " + e.getMessage(), e);
+                            break;
                         }
                     }
-                } catch (InterruptedException ignored) {
-                }
-                Log.d(TunTapAdapter.TAG, "TUN Receive Thread ended");
-                // 关闭 ARP、NDP 表
-                TunTapAdapter.this.ndpTable.stop();
+                } catch (Exception ignored) {}
+                Log.d(TunTapAdapter.TAG, "TUN TX Thread ended");
+                if (TunTapAdapter.this.ndpTable != null) TunTapAdapter.this.ndpTable.stop();
                 TunTapAdapter.this.ndpTable = null;
-                TunTapAdapter.this.arpTable.stop();
+                if (TunTapAdapter.this.arpTable != null) TunTapAdapter.this.arpTable.stop();
                 TunTapAdapter.this.arpTable = null;
             }
         };
@@ -165,6 +163,7 @@ public class TunTapAdapter implements VirtualNetworkFrameListener {
     }
 
     private void handleIPv4Packet(byte[] packetData) {
+
         boolean isMulticast;
         long destMac;
         var destIP = IPPacketUtils.getDestIP(packetData);
@@ -358,6 +357,11 @@ public class TunTapAdapter implements VirtualNetworkFrameListener {
     }
 
     public void interrupt() {
+        try {
+            stopNativeForwarder();
+        } catch (Exception e) {
+            Log.e(TAG, "Error stopping native forwarder: " + e.getMessage());
+        }
         if (this.receiveThread != null) {
             try {
                 this.in.close();

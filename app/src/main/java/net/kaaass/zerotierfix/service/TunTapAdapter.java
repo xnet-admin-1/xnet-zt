@@ -223,7 +223,9 @@ public class TunTapAdapter implements VirtualNetworkFrameListener {
             txTotalNs += (t2 - t0);
             txCount++;
             if ((txCount & 4095) == 0) {
-                Log.w(TAG, "TX stats: " + txCount + " pkts, copy=" + (txCopyNs/txCount/1000) + "us, zt=" + (txZtNs/txCount/1000) + "us, total=" + (txTotalNs/txCount/1000) + "us/pkt");
+                String msg = "TX: " + txCount + " pkts, copy=" + (txCopyNs/txCount/1000) + "us, zt=" + (txZtNs/txCount/1000) + "us, total=" + (txTotalNs/txCount/1000) + "us/pkt";
+                Log.w(TAG, msg);
+                net.kaaass.zerotierfix.util.RemoteLog.log(TAG, msg);
             }
             return;
         }

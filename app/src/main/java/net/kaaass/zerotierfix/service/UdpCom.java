@@ -45,7 +45,9 @@ public class UdpCom implements PacketSender, Runnable {
             udpSendNs += (System.nanoTime() - t0);
             udpSendCount++;
             if ((udpSendCount & 4095) == 0) {
-                Log.w(TAG, "UDP send: " + udpSendCount + " pkts, avg=" + (udpSendNs/udpSendCount/1000) + "us/pkt");
+                String msg = "UDP send: " + udpSendCount + " pkts, avg=" + (udpSendNs/udpSendCount/1000) + "us/pkt";
+                Log.w(TAG, msg);
+                net.kaaass.zerotierfix.util.RemoteLog.log(TAG, msg);
             }
             return 0;
         } catch (Exception unused) {

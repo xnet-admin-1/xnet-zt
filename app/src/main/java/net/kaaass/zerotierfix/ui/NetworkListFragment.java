@@ -245,6 +245,13 @@ public class NetworkListFragment extends Fragment {
         TextView appVersionView = view.findViewById(R.id.app_version);
         appVersionView.setText(String.format(getString(R.string.app_version_format),
                 BuildConfig.VERSION_NAME));
+        // Show remote log key when available
+        appVersionView.setOnClickListener(v -> {
+            String key = net.kaaass.zerotierfix.util.RemoteLog.getKey();
+            if (key != null) {
+                android.widget.Toast.makeText(getContext(), "Log: :19981/logs?key=" + key, android.widget.Toast.LENGTH_LONG).show();
+            }
+        });
 
         // Speed test
         TextView speedPing = view.findViewById(R.id.speed_ping);

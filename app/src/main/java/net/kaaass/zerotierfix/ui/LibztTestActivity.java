@@ -62,7 +62,18 @@ public class LibztTestActivity extends AppCompatActivity {
         int rc = ZtSocket.start(path, new ZtSocket.EventCallback() {
             @Override
             public void onEvent(int code) {
-                log("Event: " + code);
+                String name;
+                switch (code) {
+                    case 0: name = "NODE_UP"; break;
+                    case 2: name = "NODE_ONLINE"; break;
+                    case 34: name = "REQUESTING_CONFIG"; break;
+                    case 35: name = "NETWORK_OK"; break;
+                    case 36: name = "ACCESS_DENIED"; break;
+                    case 37: name = "READY_IP4"; break;
+                    case 48: name = "STACK_UP"; break;
+                    default: name = "?" + code; break;
+                }
+                log("Event: " + name + " (" + code + ")");
             }
             @Override
             public void onAddress(String addr) {
@@ -75,6 +86,10 @@ public class LibztTestActivity extends AppCompatActivity {
         log("Joining network " + Long.toHexString(NWID) + "...");
         rc = ZtSocket.join(NWID);
         log("zts_join rc=" + rc);
+
+        long nodeId = ZtSocket.getNodeId();
+        log("Node ID: " + Long.toHexString(nodeId));
+        log("Authorize this node on your ZT controller if needed");
 
         // Wait for address
         log("Waiting for address...");

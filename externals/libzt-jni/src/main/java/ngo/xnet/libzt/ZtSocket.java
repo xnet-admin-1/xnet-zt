@@ -9,8 +9,11 @@ public class ZtSocket {
     }
 
     // ZT event codes
-    public static final int ZTS_EVENT_NODE_ONLINE = 200;
-    public static final int ZTS_EVENT_NETWORK_READY_IP4 = 213;
+    public static final int ZTS_EVENT_NODE_UP = 0;
+    public static final int ZTS_EVENT_NODE_ONLINE = 2;
+    public static final int ZTS_EVENT_NETWORK_ACCESS_DENIED = 36;
+    public static final int ZTS_EVENT_NETWORK_READY_IP4 = 37;
+    public static final int ZTS_EVENT_STACK_UP = 48;
 
     public static native int start(String path, EventCallback callback);
     public static native int stop();

@@ -108,14 +108,18 @@ Java_ngo_xnet_libzt_ZtSocket_socket(JNIEnv *env, jclass clazz, jint family, jint
 JNIEXPORT jint JNICALL
 Java_ngo_xnet_libzt_ZtSocket_connect(JNIEnv *env, jclass clazz, jint fd, jstring addr, jint port) {
     const char *caddr = (*env)->GetStringUTFChars(env, addr, NULL);
-    struct sockaddr_in sa;
-    memset(&sa, 0, sizeof(sa));
-    sa.sin_family = AF_INET;
-    sa.sin_port = htons(port);
-    inet_aton(caddr, &sa.sin_addr);
+    uint8_t sa[16];
+    memset(sa, 0, sizeof(sa));
+    sa[0] = sizeof(sa);
+    sa[1] = AF_INET;
+    sa[2] = (port >> 8) & 0xff;
+    sa[3] = port & 0xff;
+    struct in_addr ia;
+    inet_aton(caddr, &ia);
+    memcpy(&sa[4], &ia, 4);
     LOGI("zts_connect fd=%d addr=%s port=%d", fd, caddr, port);
     (*env)->ReleaseStringUTFChars(env, addr, caddr);
-    int rc = zts_connect(fd, (struct sockaddr*)&sa, sizeof(sa));
+    int rc = zts_connect(fd, (struct sockaddr*)sa, sizeof(sa));
     LOGI("zts_connect rc=%d errno=%d", rc, zts_errno);
     return rc;
 }
@@ -123,14 +127,19 @@ Java_ngo_xnet_libzt_ZtSocket_connect(JNIEnv *env, jclass clazz, jint fd, jstring
 JNIEXPORT jint JNICALL
 Java_ngo_xnet_libzt_ZtSocket_bind(JNIEnv *env, jclass clazz, jint fd, jstring addr, jint port) {
     const char *caddr = (*env)->GetStringUTFChars(env, addr, NULL);
-    struct sockaddr_in sa;
-    memset(&sa, 0, sizeof(sa));
-    sa.sin_family = AF_INET;
-    sa.sin_port = htons(port);
-    inet_aton(caddr, &sa.sin_addr);
+    // lwip sockaddr_in has sin_len as first byte
+    uint8_t sa[16];
+    memset(sa, 0, sizeof(sa));
+    sa[0] = sizeof(sa);          // sin_len
+    sa[1] = AF_INET;             // sin_family
+    sa[2] = (port >> 8) & 0xff;  // sin_port high
+    sa[3] = port & 0xff;         // sin_port low
+    struct in_addr ia;
+    inet_aton(caddr, &ia);
+    memcpy(&sa[4], &ia, 4);      // sin_addr
     LOGI("zts_bind fd=%d addr=%s port=%d", fd, caddr, port);
     (*env)->ReleaseStringUTFChars(env, addr, caddr);
-    int rc = zts_bind(fd, (struct sockaddr*)&sa, sizeof(sa));
+    int rc = zts_bind(fd, (struct sockaddr*)sa, sizeof(sa));
     LOGI("zts_bind rc=%d errno=%d", rc, zts_errno);
     return rc;
 }

@@ -68,10 +68,12 @@ public class LibztTestActivity extends AppCompatActivity {
                     case 0: name = "NODE_UP"; break;
                     case 2: name = "NODE_ONLINE"; online[0] = true; break;
                     case 34: name = "REQUESTING_CONFIG"; break;
-                    case 35: name = "NETWORK_OK"; break;
+                    case 35: name = "NETWORK_OK"; online[0] = true; break;
                     case 36: name = "ACCESS_DENIED"; break;
-                    case 37: name = "READY_IP4"; break;
+                    case 37: name = "READY_IP4"; online[0] = true; break;
                     case 48: name = "STACK_UP"; break;
+                    case 96: name = "PEER_P2P"; online[0] = true; break;
+                    case 97: name = "PEER_RELAY"; online[0] = true; break;
                     default: name = "?" + code; break;
                 }
                 log("Event: " + name + " (" + code + ")");

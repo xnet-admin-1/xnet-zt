@@ -1,5 +1,6 @@
 package net.kaaass.zerotierfix.util;
 
+import android.net.VpnService;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
@@ -29,8 +30,9 @@ public class SpeedTestClient {
         return off;
     }
 
-    public static void run(Callback cb) {
+    public static void run(VpnService vpn, Callback cb) {
         try (Socket s = new Socket()) {
+            if (vpn != null) vpn.protect(s);
             s.connect(new InetSocketAddress(SERVER, PORT), TIMEOUT);
             s.setSoTimeout(TIMEOUT);
             s.setTcpNoDelay(true);

@@ -9,8 +9,8 @@ public class SpeedTestClient {
     public static final String SERVER = "10.121.21.117";
     public static final int PORT = 19980;
     private static final int TIMEOUT = 15000;
-    private static final int BUF = 32768;
-    private static final int UL_BYTES = 1024 * 1024;
+    private static final int BUF = 65536;
+    private static final int UL_BYTES = 5 * 1024 * 1024;
 
     public interface Callback {
         void onLatency(double ms);
@@ -34,6 +34,8 @@ public class SpeedTestClient {
             s.connect(new InetSocketAddress(SERVER, PORT), TIMEOUT);
             s.setSoTimeout(TIMEOUT);
             s.setTcpNoDelay(true);
+            s.setReceiveBufferSize(512 * 1024);
+            s.setSendBufferSize(512 * 1024);
             OutputStream out = s.getOutputStream();
             InputStream in = s.getInputStream();
             byte[] buf = new byte[BUF];

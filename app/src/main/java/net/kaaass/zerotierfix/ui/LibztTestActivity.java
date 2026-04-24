@@ -58,6 +58,23 @@ public class LibztTestActivity extends AppCompatActivity {
         String path = getFilesDir().getAbsolutePath() + "/libzt";
         new java.io.File(path).mkdirs();
 
+        // Copy planet file from main ZT data dir if it exists
+        // App uses "mars" as custom planet
+        java.io.File libztPlanet = new java.io.File(path, "planet");
+        for (String name : new String[]{"mars", "planet"}) {
+            java.io.File src = new java.io.File(getFilesDir(), name);
+            if (src.exists()) {
+                try {
+                    if (libztPlanet.exists()) libztPlanet.delete();
+                    java.nio.file.Files.copy(src.toPath(), libztPlanet.toPath());
+                    log("Copied " + name + " as planet for libzt");
+                    break;
+                } catch (Exception e) {
+                    log("Failed to copy " + name + ": " + e);
+                }
+            }
+        }
+
         log("Starting libzt...");
         final boolean[] online = {false};
         int rc = ZtSocket.start(path, new ZtSocket.EventCallback() {

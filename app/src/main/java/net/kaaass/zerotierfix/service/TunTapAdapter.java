@@ -169,6 +169,10 @@ public class TunTapAdapter implements VirtualNetworkFrameListener {
     private int cachedCidr;
     private final long[] nextDeadline = new long[1];
     private final byte[] ipBuf4 = new byte[4];
+    // Single-entry dest cache: skip route+ARP lookup for repeated dest IP
+    private int cachedDestIpRaw;
+    private long cachedDestMac;
+    private boolean cachedDestValid;
 
     private void handleIPv4Packet(byte[] buffer, int length) {
         // Fast path for common unicast IPv4 with known MAC
@@ -191,13 +195,25 @@ public class TunTapAdapter implements VirtualNetworkFrameListener {
 
         // Check if dest is multicast (first byte of dest IP, offset 16)
         if ((buffer[16] & 0xF0) == 0xE0) {
-            // Multicast - fall through to full path
             byte[] pkt = java.util.Arrays.copyOf(buffer, length);
             handleIPv4Packet(pkt);
             return;
         }
 
-        // Extract dest IP bytes directly
+        // Read raw dest IP as int for fast cache check
+        int destIpRaw = ((buffer[16] & 0xFF) << 24) | ((buffer[17] & 0xFF) << 16) | ((buffer[18] & 0xFF) << 8) | (buffer[19] & 0xFF);
+
+        if (cachedDestValid && destIpRaw == cachedDestIpRaw) {
+            // Cache hit — skip route lookup, ARP lookup, InetAddress allocation
+            byte[] pkt = java.util.Arrays.copyOf(buffer, length);
+            var result = this.node.processVirtualNetworkFrame(System.currentTimeMillis(), this.networkId, cachedLocalMac, cachedDestMac, IPV4_PACKET, 0, pkt, nextDeadline);
+            if (result == ResultCode.RESULT_OK) {
+                this.ztService.setNextBackgroundTaskDeadline(nextDeadline[0]);
+            }
+            return;
+        }
+
+        // Cache miss — full lookup
         System.arraycopy(buffer, 16, ipBuf4, 0, 4);
         InetAddress destIP;
         try { destIP = InetAddress.getByAddress(ipBuf4); } catch (Exception e) { return; }
@@ -216,6 +232,10 @@ public class TunTapAdapter implements VirtualNetworkFrameListener {
 
         if (this.arpTable.hasMacForAddress(destIP)) {
             long destMac = this.arpTable.getMacForAddress(destIP);
+            // Populate cache
+            cachedDestIpRaw = destIpRaw;
+            cachedDestMac = destMac;
+            cachedDestValid = true;
             // Copy only when sending to ZT core
             byte[] pkt = java.util.Arrays.copyOf(buffer, length);
             var result = this.node.processVirtualNetworkFrame(System.currentTimeMillis(), this.networkId, cachedLocalMac, destMac, IPV4_PACKET, 0, pkt, nextDeadline);

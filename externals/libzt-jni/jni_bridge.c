@@ -112,12 +112,12 @@ Java_ngo_xnet_libzt_ZtSocket_connect(JNIEnv *env, jclass clazz, jint fd, jstring
     memset(&sa, 0, sizeof(sa));
     sa.sin_family = AF_INET;
     sa.sin_port = htons(port);
-    // parse IP
-    int a,b,c,d;
-    sscanf(caddr, "%d.%d.%d.%d", &a, &b, &c, &d);
-    sa.sin_addr.s_addr = htonl((a<<24)|(b<<16)|(c<<8)|d);
+    inet_aton(caddr, &sa.sin_addr);
+    LOGI("zts_connect fd=%d addr=%s port=%d", fd, caddr, port);
     (*env)->ReleaseStringUTFChars(env, addr, caddr);
-    return zts_connect(fd, (struct sockaddr*)&sa, sizeof(sa));
+    int rc = zts_connect(fd, (struct sockaddr*)&sa, sizeof(sa));
+    LOGI("zts_connect rc=%d errno=%d", rc, zts_errno);
+    return rc;
 }
 
 JNIEXPORT jint JNICALL
@@ -127,11 +127,12 @@ Java_ngo_xnet_libzt_ZtSocket_bind(JNIEnv *env, jclass clazz, jint fd, jstring ad
     memset(&sa, 0, sizeof(sa));
     sa.sin_family = AF_INET;
     sa.sin_port = htons(port);
-    int a,b,c,d;
-    sscanf(caddr, "%d.%d.%d.%d", &a, &b, &c, &d);
-    sa.sin_addr.s_addr = htonl((a<<24)|(b<<16)|(c<<8)|d);
+    inet_aton(caddr, &sa.sin_addr);
+    LOGI("zts_bind fd=%d addr=%s port=%d", fd, caddr, port);
     (*env)->ReleaseStringUTFChars(env, addr, caddr);
-    return zts_bind(fd, (struct sockaddr*)&sa, sizeof(sa));
+    int rc = zts_bind(fd, (struct sockaddr*)&sa, sizeof(sa));
+    LOGI("zts_bind rc=%d errno=%d", rc, zts_errno);
+    return rc;
 }
 
 JNIEXPORT jint JNICALL

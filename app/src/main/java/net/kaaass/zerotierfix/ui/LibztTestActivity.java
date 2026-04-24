@@ -148,7 +148,7 @@ public class LibztTestActivity extends AppCompatActivity {
         new Thread(() -> {
             int srv = ZtSocket.socket(ZtSocket.AF_INET, ZtSocket.SOCK_STREAM, 0);
             log("Server socket fd=" + srv);
-            int brc = ZtSocket.bind(srv, myAddr, port);
+            int brc = ZtSocket.bind(srv, "0.0.0.0", port);
             log("bind rc=" + brc);
             int lrc = ZtSocket.listen(srv, 1);
             log("listen rc=" + lrc);

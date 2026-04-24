@@ -955,13 +955,22 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
         this.out = new FileOutputStream(this.vpnSocket.getFileDescriptor());
         this.tunTapAdapter.setVpnSocket(this.vpnSocket);
         this.tunTapAdapter.setFileStreams(this.in, this.out);
-        this.tunTapAdapter.setNativeTxActive(false);
+        this.tunTapAdapter.setNativeTxActive(true);
         this.tunTapAdapter.startThreads();
         try { Node.setTunFd(this.vpnSocket.getFd()); } catch (Exception e) { Log.w(TAG, "setTunFd: " + e); }
         try {
             long mac = virtualNetworkConfig.getMac();
-            // Node.startNativeTx(this.node.getNodeId(), networkId, mac);
-            Log.i(TAG, "Native TX started mac=" + Long.toHexString(mac));
+            // Find local IPv4 for ARP
+            int localIpv4 = 0;
+            for (var addr : virtualNetworkConfig.getAssignedAddresses()) {
+                if (addr.getAddress() instanceof Inet4Address) {
+                    byte[] raw = addr.getAddress().getAddress();
+                    localIpv4 = (raw[0] & 0xFF) << 24 | (raw[1] & 0xFF) << 16 | (raw[2] & 0xFF) << 8 | (raw[3] & 0xFF);
+                    break;
+                }
+            }
+            Node.startNativeTx(this.node.getNodeId(), networkId, mac, localIpv4);
+            Log.i(TAG, "Native TX started mac=" + Long.toHexString(mac) + " ip=" + Integer.toHexString(localIpv4));
         } catch (Exception e) { Log.w(TAG, "startNativeTx: " + e); }
 
         // 状态栏提示

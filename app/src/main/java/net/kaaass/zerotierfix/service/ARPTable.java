@@ -2,9 +2,12 @@ package net.kaaass.zerotierfix.service;
 
 import android.util.Log;
 
+import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
+
+import com.zerotier.sdk.Node;
 
 // TODO: clear up
 public class ARPTable {
@@ -83,6 +86,14 @@ public class ARPTable {
         }
         synchronized (this.ipEntriesMap) {
             this.ipEntriesMap.put(inetAddress, arpEntry);
+        }
+        // Mirror to native ARP cache
+        if (inetAddress instanceof Inet4Address) {
+            try {
+                byte[] raw = inetAddress.getAddress();
+                int ip = (raw[0] & 0xFF) << 24 | (raw[1] & 0xFF) << 16 | (raw[2] & 0xFF) << 8 | (raw[3] & 0xFF);
+                Node.nativeArpSet(ip, j);
+            } catch (Exception ignored) {}
         }
     }
 

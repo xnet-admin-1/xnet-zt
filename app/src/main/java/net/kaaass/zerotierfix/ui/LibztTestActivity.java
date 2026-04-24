@@ -168,12 +168,12 @@ public class LibztTestActivity extends AppCompatActivity {
         try { Thread.sleep(500); } catch (Exception e) {}
 
         // Client
-        log("Connecting to 127.0.0.1:" + port);
+        log("Connecting to " + myAddr + ":" + port);
         int fd = ZtSocket.socket(ZtSocket.AF_INET, ZtSocket.SOCK_STREAM, 0);
         log("Client socket fd=" + fd);
 
         long t0 = System.currentTimeMillis();
-        rc = ZtSocket.connect(fd, "127.0.0.1", port);
+        rc = ZtSocket.connect(fd, myAddr, port);
         log("connect rc=" + rc + " (" + (System.currentTimeMillis() - t0) + "ms)");
 
         String testMsg = "hello-libzt-" + System.currentTimeMillis();

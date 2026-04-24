@@ -1,2 +1,633 @@
 ninja: Entering directory `/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/.cxx/Debug/72411y4z/arm64-v8a'
-ninja: no work to do.
+[1/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/altcp_alloc.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/altcp_alloc.c:44:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[2/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/netif/ethernet.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/netif/ethernet.c:41:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[3/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/api/api_lib.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/api/api_lib.c:58:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[4/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/api/err.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/api/err.c:39:
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/err.h:39:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[5/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip-contrib/ports/unix/port/sys_arch.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip-contrib/ports/unix/port/sys_arch.c:47:
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/debug.h:41:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[6/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/api/if_api.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/api/if_api.c:42:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[7/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/netif/lowpan6.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/netif/lowpan6.c:51:
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/netif/lowpan6.h:45:
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/netif/lowpan6_opts.h:44:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[8/63] Building C object CMakeFiles/zt-jni.dir/jni_bridge.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt-jni/jni_bridge.c:185:
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/sio.h:39:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[9/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/api/netbuf.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/api/netbuf.c:45:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[10/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/api/netdb.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/api/netdb.c:38:
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/netdb.h:37:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[11/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/api/netifapi.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/api/netifapi.c:41:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[12/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/api/api_msg.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/api/api_msg.c:39:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/api/api_msg.c:983:25: warning: equality comparison with extraneous parentheses [-Wparentheses-equality]
+      if ((conn->linger == 0)) {
+           ~~~~~~~~~~~~~^~~~
+/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/api/api_msg.c:983:25: note: remove extraneous parentheses around the comparison to silence this warning
+      if ((conn->linger == 0)) {
+          ~             ^   ~
+/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/api/api_msg.c:983:25: note: use '=' to turn this equality comparison into an assignment
+      if ((conn->linger == 0)) {
+                        ^~
+                        =
+2 warnings generated.
+[13/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/api/tcpip.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/api/tcpip.c:39:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[14/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/inet_chksum.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/inet_chksum.c:48:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[15/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/altcp.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/altcp.c:117:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[16/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/dns.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/dns.c:87:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[17/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/altcp_tcp.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/altcp_tcp.c:45:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[18/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/def.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/def.c:61:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[19/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/init.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/init.c:38:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[20/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/ip.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/ip.c:56:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[21/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/ipv4/autoip.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/ipv4/autoip.c:57:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[22/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/ipv4/acd.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/ipv4/acd.c:64:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[23/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/ipv4/etharp.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/ipv4/etharp.c:46:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[24/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/ipv4/dhcp.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/ipv4/dhcp.c:66:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[25/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/ipv4/ip4_addr.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/ipv4/ip4_addr.c:39:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[26/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/ipv4/icmp.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/ipv4/icmp.c:42:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[27/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/ipv4/ip4.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/ipv4/ip4.c:41:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[28/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/ipv4/igmp.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/ipv4/igmp.c:83:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[29/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/ipv4/ip4_frag.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/ipv4/ip4_frag.c:41:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[30/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/ipv6/dhcp6.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/ipv6/dhcp6.c:58:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[31/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/api/sockets.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/api/sockets.c:40:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[32/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/ipv6/icmp6.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/ipv6/icmp6.c:42:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[33/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/ipv6/ethip6.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/ipv6/ethip6.c:42:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[34/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/ipv6/inet6.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/ipv6/inet6.c:42:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[35/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/ipv6/ip6_addr.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/ipv6/ip6_addr.c:43:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[36/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/ipv6/ip6.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/ipv6/ip6.c:42:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[37/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/netif/bridgeif_fdb.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/netif/bridgeif_fdb.c:44:
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/netif/bridgeif.h:40:
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/netif/bridgeif_opts.h:41:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[38/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/ipv6/ip6_frag.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/ipv6/ip6_frag.c:42:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[39/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/ipv6/mld6.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/ipv6/mld6.c:54:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[40/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/mem.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/mem.c:56:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[41/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/raw.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/raw.c:48:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[42/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/stats.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/stats.c:39:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[43/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/memp.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/memp.c:46:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[44/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/sys.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/sys.c:119:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[45/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/netif.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/netif.c:51:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[46/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/pbuf.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/pbuf.c:71:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[47/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/tcp.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/tcp.c:100:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/tcp.c:941:61: warning: result of comparison of constant 524280 with expression of type 'u16_t' (aka 'unsigned short') is always false [-Wtautological-constant-out-of-range-compare]
+  if (TCP_SEQ_GEQ(new_right_edge, pcb->rcv_ann_right_edge + LWIP_MIN((TCP_WND / 2), pcb->mss))) {
+      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/def.h:66:32: note: expanded from macro 'LWIP_MIN'
+#define LWIP_MIN(x , y)  (((x) < (y)) ? (x) : (y))
+                               ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/priv/tcp_priv.h:112:59: note: expanded from macro 'TCP_SEQ_GEQ'
+#define TCP_SEQ_GEQ(a,b)    ((s32_t)((u32_t)(a) - (u32_t)(b)) >= 0)
+                                                          ^
+2 warnings generated.
+[48/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/ipv6/nd6.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/ipv6/nd6.c:44:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[49/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/tcp_in.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/tcp_in.c:44:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[50/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/tcp_out.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/tcp_out.c:63:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[51/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/netif/bridgeif.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/netif/bridgeif.c:82:
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/netif/bridgeif.h:40:
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/netif/bridgeif_opts.h:41:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[52/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/timeouts.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/timeouts.c:42:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[53/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/netif/lowpan6_ble.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/netif/lowpan6_ble.c:69:
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/netif/lowpan6_ble.h:42:
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/netif/lowpan6_opts.h:44:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[54/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/netif/lowpan6_common.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/netif/lowpan6_common.c:51:
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/netif/lowpan6_common.h:45:
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/netif/lowpan6_opts.h:44:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[55/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/netif/slipif.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/netif/slipif.c:62:
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/netif/slipif.h:43:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[56/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/udp.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/core/udp.c:48:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[57/63] Building C object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/netif/zepif.c.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/ext/lwip/src/netif/zepif.c:50:
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/netif/zepif.h:43:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[58/63] Building CXX object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/src/Sockets.cpp.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/src/Sockets.cpp:35:
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/sockets.h:42:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[59/63] Building CXX object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/src/lwipDriver.cpp.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/src/lwipDriver.cpp:38:
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/netif/ethernet.h:44:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[60/63] Building CXX object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/src/VirtualTap.cpp.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/src/VirtualTap.cpp:40:
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipDriver.hpp:37:
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/err.h:39:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[61/63] Building CXX object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/src/Controls.cpp.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/src/Controls.cpp:46:
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipDriver.hpp:37:
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/err.h:39:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+1 warning generated.
+[62/63] Building CXX object CMakeFiles/zt-jni.dir/home/xnet-admin/projects/xnet-zt/externals/libzt/src/Service.cpp.o
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt/src/Service.cpp:68:
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipDriver.hpp:37:
+In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/err.h:39:
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
+        ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt/src/Service.cpp:947:13: warning: 'networkCount' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+        inline int networkCount()
+                   ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/Service.hpp:168:14: note: overridden virtual function is here
+        virtual int networkCount() = 0;
+                    ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt/src/Service.cpp:953:14: warning: 'join' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+        inline void join(uint64_t nwid)
+                    ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/Service.hpp:170:15: note: overridden virtual function is here
+        virtual void join(uint64_t nwid) = 0;
+                     ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt/src/Service.cpp:958:14: warning: 'leave' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+        inline void leave(uint64_t nwid)
+                    ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/Service.hpp:171:15: note: overridden virtual function is here
+        virtual void leave(uint64_t nwid) = 0;
+                     ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt/src/Service.cpp:963:14: warning: 'leaveAll' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+        inline void leaveAll()
+                    ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/Service.hpp:169:15: note: overridden virtual function is here
+        virtual void leaveAll() = 0;
+                     ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt/src/Service.cpp:971:13: warning: 'getPeerStatus' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+        inline int getPeerStatus(uint64_t id)
+                   ^
+/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/Service.hpp:172:14: note: overridden virtual function is here
+        virtual int getPeerStatus(uint64_t id) = 0;
+                    ^
+6 warnings generated.
+[63/63] Linking CXX shared library ../../../../build/intermediates/cxx/Debug/72411y4z/obj/arm64-v8a/libzt-jni.so

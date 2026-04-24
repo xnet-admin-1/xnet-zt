@@ -43,6 +43,9 @@ public class TunTapAdapter implements VirtualNetworkFrameListener {
     private FileOutputStream out;
     private Thread receiveThread;
     private ParcelFileDescriptor vpnSocket;
+    private boolean nativeTxActive = false;
+
+    public void setNativeTxActive(boolean active) { this.nativeTxActive = active; }
 
     public TunTapAdapter(ZeroTierOneService zeroTierOneService, long j) {
         this.ztService = zeroTierOneService;
@@ -109,6 +112,10 @@ public class TunTapAdapter implements VirtualNetworkFrameListener {
     }
 
     public void startThreads() {
+        if (this.nativeTxActive) {
+            Log.i(TAG, "Native TX active, skipping Java TX thread");
+            return;
+        }
         this.receiveThread = new Thread("TUN Receive Thread") {
 
             @Override

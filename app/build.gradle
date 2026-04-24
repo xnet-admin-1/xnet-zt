@@ -16,6 +16,12 @@ android {
         buildConfig true
     }
 
+    packaging {
+        jniLibs {
+            useLegacyPackaging = false
+        }
+    }
+
     defaultConfig {
         applicationId "ngo.xnet.zerotier"
         minSdk 24

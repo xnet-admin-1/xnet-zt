@@ -969,7 +969,7 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
                     break;
                 }
             }
-            Node.startNativeTx(this.node.getNodeId(), networkId, mac, localIpv4);
+            // Node.startNativeTx(this.node.getNodeId(), networkId, mac, localIpv4);
             Log.i(TAG, "Native TX started mac=" + Long.toHexString(mac) + " ip=" + Integer.toHexString(localIpv4));
         } catch (Exception e) { Log.w(TAG, "startNativeTx: " + e); }
 

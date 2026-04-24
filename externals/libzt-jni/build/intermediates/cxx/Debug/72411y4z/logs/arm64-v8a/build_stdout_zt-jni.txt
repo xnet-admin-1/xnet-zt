@@ -1,12 +1,2 @@
 ninja: Entering directory `/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/.cxx/Debug/72411y4z/arm64-v8a'
-[1/2] Building C object CMakeFiles/zt-jni.dir/jni_bridge.c.o
-In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt-jni/jni_bridge.c:185:
-In file included from /home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/sio.h:39:
-/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/ext/lwip/src/include/lwip/opt.h:501:9: warning: 'LWIP_NUM_SYS_TIMEOUT_INTERNAL' macro redefined [-Wmacro-redefined]
-#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)))
-        ^
-/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/../libzt/src/lwipopts.h:615:9: note: previous definition is here
-#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
-        ^
-1 warning generated.
-[2/2] Linking CXX shared library ../../../../build/intermediates/cxx/Debug/72411y4z/obj/arm64-v8a/libzt-jni.so
+ninja: no work to do.

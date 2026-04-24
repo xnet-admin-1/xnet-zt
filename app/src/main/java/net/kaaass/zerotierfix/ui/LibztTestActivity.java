@@ -38,6 +38,11 @@ public class LibztTestActivity extends AppCompatActivity {
         btnP2p.setOnClickListener(v -> { v.setEnabled(false); clearLog(); new Thread(this::runP2P).start(); });
         root.addView(btnP2p);
 
+        Button btnExt = new Button(this);
+        btnExt.setText("Phase 3: Talk to external server");
+        btnExt.setOnClickListener(v -> { v.setEnabled(false); clearLog(); new Thread(this::runExternal).start(); });
+        root.addView(btnExt);
+
         scrollView = new ScrollView(this);
         logView = new TextView(this);
         logView.setTextSize(12);
@@ -257,6 +262,46 @@ public class LibztTestActivity extends AppCompatActivity {
             log("=== P2P TEST PASSED ===");
         } else {
             log("=== P2P FAILED: no response ===");
+        }
+        ZtSocket.closeSocket(fd);
+    }
+
+    private void runExternal() {
+        if (!startLibzt()) return;
+
+        String serverAddr = "10.121.21.117";
+        int port = 19997;
+
+        log("\n--- Phase 3: libzt → external server ---");
+        log("libzt node: " + libztAddr);
+        log("Server: " + serverAddr + ":" + port);
+
+        int fd = ZtSocket.socket(ZtSocket.AF_INET, ZtSocket.SOCK_STREAM, 0);
+        log("Socket fd=" + fd);
+
+        long t0 = System.currentTimeMillis();
+        int rc = ZtSocket.connect(fd, serverAddr, port);
+        long connTime = System.currentTimeMillis() - t0;
+        log("connect rc=" + rc + " (" + connTime + "ms)");
+
+        if (rc != 0) {
+            log("=== EXTERNAL TEST FAILED: connect error ===");
+            ZtSocket.closeSocket(fd);
+            return;
+        }
+
+        String testMsg = "hello-from-libzt-" + System.currentTimeMillis();
+        t0 = System.currentTimeMillis();
+        ZtSocket.send(fd, testMsg.getBytes());
+        byte[] resp = ZtSocket.recv(fd, 1024);
+        long rtt = System.currentTimeMillis() - t0;
+
+        if (resp != null) {
+            log("Got: " + new String(resp));
+            log("External RTT: " + rtt + "ms (connect: " + connTime + "ms)");
+            log("=== EXTERNAL TEST PASSED ===");
+        } else {
+            log("=== EXTERNAL TEST FAILED: no response ===");
         }
         ZtSocket.closeSocket(fd);
     }

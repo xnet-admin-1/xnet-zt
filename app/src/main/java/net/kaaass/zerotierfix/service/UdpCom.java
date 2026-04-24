@@ -30,6 +30,9 @@ public class UdpCom implements PacketSender, Runnable {
         this.node = node2;
     }
 
+    private long udpSendCount;
+    private long udpSendNs;
+
     @Override // com.zerotier.sdk.PacketSender
     public int onSendPacketRequested(long j, InetSocketAddress inetSocketAddress, byte[] bArr, int i) {
         if (this.svrSocket == null) {
@@ -37,7 +40,13 @@ public class UdpCom implements PacketSender, Runnable {
             return -1;
         }
         try {
+            long t0 = System.nanoTime();
             this.svrSocket.send(new DatagramPacket(bArr, bArr.length, inetSocketAddress));
+            udpSendNs += (System.nanoTime() - t0);
+            udpSendCount++;
+            if ((udpSendCount & 4095) == 0) {
+                Log.w(TAG, "UDP send: " + udpSendCount + " pkts, avg=" + (udpSendNs/udpSendCount/1000) + "us/pkt");
+            }
             return 0;
         } catch (Exception unused) {
             return -1;

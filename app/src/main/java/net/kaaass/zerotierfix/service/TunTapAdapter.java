@@ -174,6 +174,12 @@ public class TunTapAdapter implements VirtualNetworkFrameListener {
     private long cachedDestMac;
     private boolean cachedDestValid;
 
+    // Timing instrumentation
+    private long txCount;
+    private long txCopyNs;
+    private long txZtNs;
+    private long txTotalNs;
+
     private void handleIPv4Packet(byte[] buffer, int length) {
         // Fast path for common unicast IPv4 with known MAC
         var config = this.cachedConfig;
@@ -204,11 +210,20 @@ public class TunTapAdapter implements VirtualNetworkFrameListener {
         int destIpRaw = ((buffer[16] & 0xFF) << 24) | ((buffer[17] & 0xFF) << 16) | ((buffer[18] & 0xFF) << 8) | (buffer[19] & 0xFF);
 
         if (cachedDestValid && destIpRaw == cachedDestIpRaw) {
-            // Cache hit — skip route lookup, ARP lookup, InetAddress allocation
+            long t0 = System.nanoTime();
             byte[] pkt = java.util.Arrays.copyOf(buffer, length);
+            long t1 = System.nanoTime();
             var result = this.node.processVirtualNetworkFrame(System.currentTimeMillis(), this.networkId, cachedLocalMac, cachedDestMac, IPV4_PACKET, 0, pkt, nextDeadline);
+            long t2 = System.nanoTime();
             if (result == ResultCode.RESULT_OK) {
                 this.ztService.setNextBackgroundTaskDeadline(nextDeadline[0]);
+            }
+            txCopyNs += (t1 - t0);
+            txZtNs += (t2 - t1);
+            txTotalNs += (t2 - t0);
+            txCount++;
+            if ((txCount & 4095) == 0) {
+                Log.w(TAG, "TX stats: " + txCount + " pkts, copy=" + (txCopyNs/txCount/1000) + "us, zt=" + (txZtNs/txCount/1000) + "us, total=" + (txTotalNs/txCount/1000) + "us/pkt");
             }
             return;
         }

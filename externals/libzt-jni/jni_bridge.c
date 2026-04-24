@@ -30,8 +30,8 @@ static void zt_callback(struct zts_callback_msg *msg) {
     if (g_onEvent) {
         (*env)->CallVoidMethod(env, g_callback, g_onEvent, (jint)msg->eventCode);
     }
-    // Capture address on ADDR_ADDED_IP4 (201) or NETWORK_READY_IP4 (213)
-    if (msg->addr && (msg->eventCode == 201 || msg->eventCode == 213)) {
+    // Capture address on ADDR_ADDED_IP4 (144) or NETWORK_READY_IP4 (37)
+    if (msg->addr && (msg->eventCode == 144 || msg->eventCode == 37)) {
         struct sockaddr_in *in = (struct sockaddr_in*)&msg->addr->addr;
         uint32_t ip = ntohl(in->sin_addr.s_addr);
         snprintf(g_addr, sizeof(g_addr), "%d.%d.%d.%d",

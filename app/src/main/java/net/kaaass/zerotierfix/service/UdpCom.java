@@ -30,8 +30,6 @@ public class UdpCom implements PacketSender, Runnable {
         this.node = node2;
     }
 
-    private final DatagramPacket sendPacket = new DatagramPacket(new byte[0], 0);
-
     @Override // com.zerotier.sdk.PacketSender
     public int onSendPacketRequested(long j, InetSocketAddress inetSocketAddress, byte[] bArr, int i) {
         if (this.svrSocket == null) {
@@ -39,9 +37,7 @@ public class UdpCom implements PacketSender, Runnable {
             return -1;
         }
         try {
-            sendPacket.setData(bArr, 0, bArr.length);
-            sendPacket.setSocketAddress(inetSocketAddress);
-            this.svrSocket.send(sendPacket);
+            this.svrSocket.send(new DatagramPacket(bArr, bArr.length, inetSocketAddress));
             return 0;
         } catch (Exception unused) {
             return -1;

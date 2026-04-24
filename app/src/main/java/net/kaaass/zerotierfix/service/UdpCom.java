@@ -30,6 +30,8 @@ public class UdpCom implements PacketSender, Runnable {
         this.node = node2;
     }
 
+    private final DatagramPacket sendPacket = new DatagramPacket(new byte[0], 0);
+
     @Override // com.zerotier.sdk.PacketSender
     public int onSendPacketRequested(long j, InetSocketAddress inetSocketAddress, byte[] bArr, int i) {
         if (this.svrSocket == null) {
@@ -37,9 +39,9 @@ public class UdpCom implements PacketSender, Runnable {
             return -1;
         }
         try {
-            DatagramPacket datagramPacket = new DatagramPacket(bArr, bArr.length, inetSocketAddress);
-            DebugLog.d(TAG, "onSendPacketRequested: Sent " + datagramPacket.getLength() + " bytes to " + inetSocketAddress.toString());
-            this.svrSocket.send(datagramPacket);
+            sendPacket.setData(bArr, 0, bArr.length);
+            sendPacket.setSocketAddress(inetSocketAddress);
+            this.svrSocket.send(sendPacket);
             return 0;
         } catch (Exception unused) {
             return -1;
@@ -51,15 +53,16 @@ public class UdpCom implements PacketSender, Runnable {
         try {
             long[] jArr = new long[1];
             byte[] bArr = new byte[16384];
+            DatagramPacket datagramPacket = new DatagramPacket(bArr, 16384);
             while (!Thread.interrupted()) {
                 jArr[0] = 0;
-                DatagramPacket datagramPacket = new DatagramPacket(bArr, 16384);
+                datagramPacket.setLength(16384);
                 try {
                     this.svrSocket.receive(datagramPacket);
-                    if (datagramPacket.getLength() > 0) {
-                        byte[] bArr2 = new byte[datagramPacket.getLength()];
-                        System.arraycopy(datagramPacket.getData(), 0, bArr2, 0, datagramPacket.getLength());
-                        DebugLog.d(TAG, "Got " + datagramPacket.getLength() + " Bytes From: " + datagramPacket.getAddress().toString() + ":" + datagramPacket.getPort());
+                    int len = datagramPacket.getLength();
+                    if (len > 0) {
+                        byte[] bArr2 = new byte[len];
+                        System.arraycopy(bArr, 0, bArr2, 0, len);
                         ResultCode processWirePacket = this.node.processWirePacket(System.currentTimeMillis(), -1, new InetSocketAddress(datagramPacket.getAddress(), datagramPacket.getPort()), bArr2, jArr);
                         if (processWirePacket != ResultCode.RESULT_OK) {
                             Log.e(TAG, "processWirePacket returned: " + processWirePacket.toString());

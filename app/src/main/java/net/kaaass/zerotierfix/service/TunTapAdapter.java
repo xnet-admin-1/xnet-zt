@@ -133,12 +133,11 @@ public class TunTapAdapter implements VirtualNetworkFrameListener {
                         try {
                             int readCount = TunTapAdapter.this.in.read(buffer);
                             if (readCount > 0) {
-                                byte[] pkt = java.util.Arrays.copyOf(buffer, readCount);
-                                byte iPVersion = IPPacketUtils.getIPVersion(pkt);
+                                byte iPVersion = (byte) (buffer[0] >> 4);
                                 if (iPVersion == 4) {
-                                    TunTapAdapter.this.handleIPv4Packet(pkt);
+                                    TunTapAdapter.this.handleIPv4Packet(buffer, readCount);
                                 } else if (iPVersion == 6) {
-                                    TunTapAdapter.this.handleIPv6Packet(pkt);
+                                    TunTapAdapter.this.handleIPv6Packet(java.util.Arrays.copyOf(buffer, readCount));
                                 }
                             } else if (readCount < 0) {
                                 break;
@@ -160,6 +159,83 @@ public class TunTapAdapter implements VirtualNetworkFrameListener {
             }
         };
         this.receiveThread.start();
+    }
+
+    // Cached fields for fast path - avoid per-packet allocations
+    private VirtualNetworkConfig cachedConfig;
+    private long cachedConfigNetworkId;
+    private long cachedLocalMac;
+    private InetAddress cachedLocalV4;
+    private int cachedCidr;
+    private final long[] nextDeadline = new long[1];
+    private final byte[] ipBuf4 = new byte[4];
+
+    private void handleIPv4Packet(byte[] buffer, int length) {
+        // Fast path for common unicast IPv4 with known MAC
+        var config = this.cachedConfig;
+        if (config == null || this.cachedConfigNetworkId != this.networkId) {
+            config = this.ztService.getVirtualNetworkConfig(this.networkId);
+            if (config == null) return;
+            this.cachedConfig = config;
+            this.cachedConfigNetworkId = this.networkId;
+            this.cachedLocalMac = config.getMac();
+            for (var addr : config.getAssignedAddresses()) {
+                if (addr.getAddress() instanceof Inet4Address) {
+                    this.cachedLocalV4 = addr.getAddress();
+                    this.cachedCidr = addr.getPort();
+                    break;
+                }
+            }
+        }
+        if (this.cachedLocalV4 == null) return;
+
+        // Check if dest is multicast (first byte of dest IP, offset 16)
+        if ((buffer[16] & 0xF0) == 0xE0) {
+            // Multicast - fall through to full path
+            byte[] pkt = java.util.Arrays.copyOf(buffer, length);
+            handleIPv4Packet(pkt);
+            return;
+        }
+
+        // Extract dest IP bytes directly
+        System.arraycopy(buffer, 16, ipBuf4, 0, 4);
+        InetAddress destIP;
+        try { destIP = InetAddress.getByAddress(ipBuf4); } catch (Exception e) { return; }
+
+        // Check route for gateway
+        var route = routeForDestination(destIP);
+        var gateway = route != null ? route.getGateway() : null;
+        if (gateway != null) {
+            System.arraycopy(buffer, 12, ipBuf4, 0, 4);
+            InetAddress sourceIP;
+            try { sourceIP = InetAddress.getByAddress(ipBuf4); } catch (Exception e) { return; }
+            var destRoute = InetAddressUtils.addressToRouteNo0Route(destIP, cachedCidr);
+            var sourceRoute = InetAddressUtils.addressToRouteNo0Route(sourceIP, cachedCidr);
+            if (!Objects.equals(destRoute, sourceRoute)) destIP = gateway;
+        }
+
+        if (this.arpTable.hasMacForAddress(destIP)) {
+            long destMac = this.arpTable.getMacForAddress(destIP);
+            // Copy only when sending to ZT core
+            byte[] pkt = java.util.Arrays.copyOf(buffer, length);
+            var result = this.node.processVirtualNetworkFrame(System.currentTimeMillis(), this.networkId, cachedLocalMac, destMac, IPV4_PACKET, 0, pkt, nextDeadline);
+            if (result == ResultCode.RESULT_OK) {
+                this.ztService.setNextBackgroundTaskDeadline(nextDeadline[0]);
+            }
+        } else {
+            // ARP needed - use full path
+            byte[] pkt = java.util.Arrays.copyOf(buffer, length);
+            handleIPv4PacketArp(pkt, destIP);
+        }
+    }
+
+    private void handleIPv4PacketArp(byte[] packetData, InetAddress destIP) {
+        long destMac = InetAddressUtils.BROADCAST_MAC_ADDRESS;
+        packetData = this.arpTable.getRequestPacket(cachedLocalMac, cachedLocalV4, destIP);
+        var result = this.node.processVirtualNetworkFrame(System.currentTimeMillis(), this.networkId, cachedLocalMac, destMac, ARP_PACKET, 0, packetData, nextDeadline);
+        if (result == ResultCode.RESULT_OK) {
+            this.ztService.setNextBackgroundTaskDeadline(nextDeadline[0]);
+        }
     }
 
     private void handleIPv4Packet(byte[] packetData) {
@@ -231,7 +307,7 @@ public class TunTapAdapter implements VirtualNetworkFrameListener {
             this.ztService.setNextBackgroundTaskDeadline(nextDeadline[0]);
         } else {
             // 目标 MAC 未知，进行 ARP 查询
-            Log.d(TAG, "Unknown dest MAC address.  Need to look it up. " + destIP);
+            /* ARP lookup needed */;
             destMac = InetAddressUtils.BROADCAST_MAC_ADDRESS;
             packetData = this.arpTable.getRequestPacket(localMac, localV4Address, destIP);
             var result = this.node.processVirtualNetworkFrame(System.currentTimeMillis(), this.networkId, localMac, destMac, ARP_PACKET, 0, packetData, nextDeadline);
@@ -239,7 +315,6 @@ public class TunTapAdapter implements VirtualNetworkFrameListener {
                 Log.e(TAG, "Error sending ARP packet: " + result.toString());
                 return;
             }
-            Log.d(TAG, "ARP Request Sent!");
             this.ztService.setNextBackgroundTaskDeadline(nextDeadline[0]);
         }
     }
@@ -400,8 +475,6 @@ public class TunTapAdapter implements VirtualNetworkFrameListener {
         } else if (this.in == null || this.out == null) {
             Log.e(TAG, "no in/out streams");
         } else if (etherType == ARP_PACKET) {
-            // 收到 ARP 包。更新 ARP 表，若需要则进行应答
-            Log.d(TAG, "Got ARP Packet");
             var arpReply = this.arpTable.processARPPacket(frameData);
             if (arpReply != null && arpReply.getDestMac() != 0 && arpReply.getDestAddress() != null) {
                 // 获取本地 V4 地址
@@ -426,7 +499,6 @@ public class TunTapAdapter implements VirtualNetworkFrameListener {
                         Log.e(TAG, "Error sending ARP packet: " + result.toString());
                         return;
                     }
-                    Log.d(TAG, "ARP Reply Sent!");
                     this.ztService.setNextBackgroundTaskDeadline(nextDeadline[0]);
                 }
             }

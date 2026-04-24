@@ -27,6 +27,11 @@ static void zt_callback(struct zts_callback_msg *msg) {
         attached = 1;
     }
     LOGI("zt event: %d", msg->eventCode);
+
+    // Log node details for error events
+    if (msg->eventCode == 16 && msg->node) {
+        LOGI("NODE_UNRECOVERABLE_ERROR nodeId=%llx", (unsigned long long)msg->node->address);
+    }
     if (g_onEvent) {
         (*env)->CallVoidMethod(env, g_callback, g_onEvent, (jint)msg->eventCode);
     }

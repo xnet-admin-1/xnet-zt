@@ -13,11 +13,12 @@ import ngo.xnet.libzt.ZtSocket;
 
 public class LibztTestActivity extends AppCompatActivity {
     private static final String TAG = "LibztTest";
-    private static final long NWID = 0xd88e73ff30fdf2b0L; // your network
+    private static final long NWID = 0xd88e73ff30fdf2b0L;
     private TextView logView;
     private ScrollView scrollView;
     private Handler handler = new Handler(Looper.getMainLooper());
-    private String myAddr = null;
+    private volatile String libztAddr = null;
+    private volatile boolean online = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,9 +28,15 @@ public class LibztTestActivity extends AppCompatActivity {
         root.setOrientation(LinearLayout.VERTICAL);
         root.setPadding(32, 32, 32, 32);
 
-        Button btnStart = new Button(this);
-        btnStart.setText("Start libzt + Loopback Test");
-        root.addView(btnStart);
+        Button btnLoopback = new Button(this);
+        btnLoopback.setText("Phase 1: Loopback");
+        btnLoopback.setOnClickListener(v -> { v.setEnabled(false); clearLog(); new Thread(this::runLoopback).start(); });
+        root.addView(btnLoopback);
+
+        Button btnP2p = new Button(this);
+        btnP2p.setText("Phase 2: Talk to VPN node");
+        btnP2p.setOnClickListener(v -> { v.setEnabled(false); clearLog(); new Thread(this::runP2P).start(); });
+        root.addView(btnP2p);
 
         scrollView = new ScrollView(this);
         logView = new TextView(this);
@@ -39,11 +46,11 @@ public class LibztTestActivity extends AppCompatActivity {
             LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
 
         setContentView(root);
+    }
 
-        btnStart.setOnClickListener(v -> {
-            btnStart.setEnabled(false);
-            new Thread(this::runTest).start();
-        });
+    private void clearLog() {
+        new java.io.File(getFilesDir(), "libzt-log.txt").delete();
+        handler.post(() -> logView.setText(""));
     }
 
     private void log(String msg) {
@@ -52,45 +59,58 @@ public class LibztTestActivity extends AppCompatActivity {
             logView.append(msg + "\n");
             scrollView.fullScroll(ScrollView.FOCUS_DOWN);
         });
+        try {
+            java.io.FileWriter fw = new java.io.FileWriter(new java.io.File(getFilesDir(), "libzt-log.txt"), true);
+            fw.write(msg + "\n");
+            fw.close();
+        } catch (Exception ignored) {}
     }
 
-    private void runTest() {
-        String path = getFilesDir().getAbsolutePath() + "/libzt";
-        new java.io.File(path).mkdirs();
-
-        // Copy planet file from main ZT data dir if it exists
-        // App uses "mars" as custom planet
-        java.io.File libztPlanet = new java.io.File(path, "planet");
+    private void copyPlanet(String path) {
+        java.io.File dest = new java.io.File(path, "planet");
         for (String name : new String[]{"mars", "planet"}) {
             java.io.File src = new java.io.File(getFilesDir(), name);
             if (src.exists()) {
                 try {
-                    if (libztPlanet.exists()) libztPlanet.delete();
-                    java.nio.file.Files.copy(src.toPath(), libztPlanet.toPath());
-                    log("Copied " + name + " as planet for libzt");
-                    break;
-                } catch (Exception e) {
-                    log("Failed to copy " + name + ": " + e);
-                }
+                    if (dest.exists()) dest.delete();
+                    java.nio.file.Files.copy(src.toPath(), dest.toPath());
+                    log("Copied " + name + " as planet");
+                    return;
+                } catch (Exception e) { log("Copy failed: " + e); }
             }
         }
+    }
+
+    private boolean startLibzt() {
+        if (online) return true; // already running
+        String path = getFilesDir().getAbsolutePath() + "/libzt";
+        // Clear stale state from previous runs
+        java.io.File dir = new java.io.File(path);
+        if (dir.exists()) {
+            for (java.io.File f : dir.listFiles()) {
+                if (!f.getName().equals("identity.public") && !f.getName().equals("identity.secret"))
+                    f.delete();
+            }
+        }
+        dir.mkdirs();
+        copyPlanet(path);
 
         log("Starting libzt...");
-        final boolean[] online = {false};
+        ZtSocket.stop(); // clean up any previous instance
+        try { Thread.sleep(500); } catch (Exception e) {}
         int rc = ZtSocket.start(path, new ZtSocket.EventCallback() {
             @Override
             public void onEvent(int code) {
                 String name;
                 switch (code) {
                     case 0: name = "NODE_UP"; break;
-                    case 2: name = "NODE_ONLINE"; online[0] = true; break;
-                    case 34: name = "REQUESTING_CONFIG"; break;
-                    case 35: name = "NETWORK_OK"; online[0] = true; break;
+                    case 2: name = "NODE_ONLINE"; online = true; break;
+                    case 35: name = "NETWORK_OK"; online = true; break;
                     case 36: name = "ACCESS_DENIED"; break;
-                    case 37: name = "READY_IP4"; online[0] = true; break;
+                    case 37: name = "READY_IP4"; online = true; break;
                     case 48: name = "STACK_UP"; break;
-                    case 96: name = "PEER_P2P"; online[0] = true; break;
-                    case 97: name = "PEER_RELAY"; online[0] = true; break;
+                    case 96: name = "PEER_P2P"; online = true; break;
+                    case 97: name = "PEER_RELAY"; online = true; break;
                     default: name = "?" + code; break;
                 }
                 log("Event: " + name + " (" + code + ")");
@@ -98,96 +118,145 @@ public class LibztTestActivity extends AppCompatActivity {
             @Override
             public void onAddress(String addr) {
                 log("Address: " + addr);
-                myAddr = addr;
+                libztAddr = addr;
             }
-        }, 9994);
+        }, 29994);
         log("zts_start rc=" + rc);
+        if (rc != 0) { log("Start failed"); return false; }
 
-        // Wait for node to come online
-        log("Waiting for NODE_ONLINE...");
-        for (int i = 0; i < 30 && !online[0]; i++) {
+        log("Waiting for online...");
+        for (int i = 0; i < 30 && !online; i++) {
             try { Thread.sleep(1000); } catch (Exception e) { break; }
-            if (i % 5 == 4) {
-                long nodeId = ZtSocket.getNodeId();
-                int running = ZtSocket.coreRunning();
-                log("Still waiting... (" + (i+1) + "s) nodeId=" + Long.toHexString(nodeId) + " coreRunning=" + running);
-            }
         }
-        if (!online[0]) {
-            long nodeId = ZtSocket.getNodeId();
-            log("TIMEOUT: node never came online.");
-            log("Node ID: " + Long.toHexString(nodeId));
-            log("Make sure: 1) ZT VPN is disconnected  2) Internet works  3) Force-stopped app before install");
-            return;
-        }
+        if (!online) { log("TIMEOUT: not online"); return false; }
 
-        log("Joining network " + Long.toHexString(NWID) + "...");
-        rc = ZtSocket.join(NWID);
-        log("zts_join rc=" + rc);
+        log("Joining " + Long.toHexString(NWID) + "...");
+        ZtSocket.join(NWID);
+        log("Node ID: " + Long.toHexString(ZtSocket.getNodeId()));
 
-        long nodeId = ZtSocket.getNodeId();
-        log("Node ID: " + Long.toHexString(nodeId));
-        log("Authorize this node on your ZT controller if needed");
-
-        // Wait for address
         log("Waiting for address...");
-        for (int i = 0; i < 60 && myAddr == null; i++) {
+        for (int i = 0; i < 60 && libztAddr == null; i++) {
             try { Thread.sleep(1000); } catch (Exception e) { break; }
         }
-        if (myAddr == null) {
-            log("TIMEOUT: no address after 60s");
-            return;
-        }
-        log("Got address: " + myAddr);
+        if (libztAddr == null) { log("TIMEOUT: no address"); return false; }
+        log("libzt address: " + libztAddr);
+        return true;
+    }
 
-        // Loopback test: server + client on same node
+    private void runLoopback() {
+        if (!startLibzt()) return;
         int port = 19999;
-        log("Starting TCP server on " + myAddr + ":" + port);
+        log("\n--- Phase 1: Loopback ---");
+        log("Server on " + libztAddr + ":" + port);
 
-        // Server thread
         new Thread(() -> {
             int srv = ZtSocket.socket(ZtSocket.AF_INET, ZtSocket.SOCK_STREAM, 0);
-            log("Server socket fd=" + srv);
-            int brc = ZtSocket.bind(srv, "0.0.0.0", port);
-            log("bind rc=" + brc);
-            int lrc = ZtSocket.listen(srv, 1);
-            log("listen rc=" + lrc);
-            log("Waiting for connection...");
-            int client = ZtSocket.accept(srv);
-            log("Accepted client fd=" + client);
-            byte[] data = ZtSocket.recv(client, 1024);
+            ZtSocket.bind(srv, "0.0.0.0", port);
+            ZtSocket.listen(srv, 1);
+            int c = ZtSocket.accept(srv);
+            byte[] data = ZtSocket.recv(c, 1024);
             if (data != null) {
-                String msg = new String(data);
-                log("Server received: " + msg);
-                ZtSocket.send(client, ("echo:" + msg).getBytes());
+                log("Server got: " + new String(data));
+                ZtSocket.send(c, ("echo:" + new String(data)).getBytes());
             }
-            ZtSocket.closeSocket(client);
+            ZtSocket.closeSocket(c);
             ZtSocket.closeSocket(srv);
         }).start();
 
         try { Thread.sleep(500); } catch (Exception e) {}
 
-        // Client
-        log("Connecting to " + myAddr + ":" + port);
         int fd = ZtSocket.socket(ZtSocket.AF_INET, ZtSocket.SOCK_STREAM, 0);
-        log("Client socket fd=" + fd);
-
         long t0 = System.currentTimeMillis();
-        rc = ZtSocket.connect(fd, myAddr, port);
+        int rc = ZtSocket.connect(fd, libztAddr, port);
         log("connect rc=" + rc + " (" + (System.currentTimeMillis() - t0) + "ms)");
+        ZtSocket.send(fd, "hello-loopback".getBytes());
+        byte[] resp = ZtSocket.recv(fd, 1024);
+        if (resp != null) {
+            log("Got: " + new String(resp));
+            log("=== LOOPBACK PASSED ===");
+        } else {
+            log("=== LOOPBACK FAILED ===");
+        }
+        ZtSocket.closeSocket(fd);
+    }
 
-        String testMsg = "hello-libzt-" + System.currentTimeMillis();
+    private void runP2P() {
+        if (!startLibzt()) return;
+
+        // Find the main VPN's ZT address
+        String vpnAddr = null;
+        try {
+            java.util.Enumeration<java.net.NetworkInterface> nets = java.net.NetworkInterface.getNetworkInterfaces();
+            while (nets.hasMoreElements()) {
+                java.net.NetworkInterface ni = nets.nextElement();
+                if (!ni.getName().startsWith("tun")) continue;
+                java.util.Enumeration<java.net.InetAddress> addrs = ni.getInetAddresses();
+                while (addrs.hasMoreElements()) {
+                    java.net.InetAddress a = addrs.nextElement();
+                    if (a instanceof java.net.Inet4Address) {
+                        vpnAddr = a.getHostAddress();
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) { log("Error finding VPN addr: " + e); }
+
+        if (vpnAddr == null) {
+            log("No TUN interface found. Connect the VPN first, then run this test.");
+            return;
+        }
+        final String vpn = vpnAddr;
+
+        log("\n--- Phase 2: libzt → VPN node ---");
+        log("libzt node: " + libztAddr + " (userspace)");
+        log("VPN node:   " + vpn + " (TUN)");
+
+        // Start a TCP server on the VPN address using regular Java sockets
+        int port = 19998;
+        new Thread(() -> {
+            try {
+                java.net.ServerSocket ss = new java.net.ServerSocket(port, 1, java.net.InetAddress.getByName(vpn));
+                log("Java server listening on " + vpn + ":" + port);
+                java.net.Socket c = ss.accept();
+                log("Java server accepted connection from " + c.getRemoteSocketAddress());
+                byte[] buf = new byte[1024];
+                int n = c.getInputStream().read(buf);
+                String msg = new String(buf, 0, n);
+                log("Java server got: " + msg);
+                c.getOutputStream().write(("reply:" + msg).getBytes());
+                c.close();
+                ss.close();
+            } catch (Exception e) { log("Java server error: " + e); }
+        }).start();
+
+        try { Thread.sleep(500); } catch (Exception e) {}
+
+        // Connect from libzt to the VPN node
+        log("libzt connecting to " + vpn + ":" + port);
+        int fd = ZtSocket.socket(ZtSocket.AF_INET, ZtSocket.SOCK_STREAM, 0);
+        long t0 = System.currentTimeMillis();
+        int rc = ZtSocket.connect(fd, vpn, port);
+        long connTime = System.currentTimeMillis() - t0;
+        log("connect rc=" + rc + " (" + connTime + "ms)");
+
+        if (rc != 0) {
+            log("=== P2P FAILED: connect error ===");
+            ZtSocket.closeSocket(fd);
+            return;
+        }
+
+        String testMsg = "hello-from-libzt-" + System.currentTimeMillis();
         t0 = System.currentTimeMillis();
         ZtSocket.send(fd, testMsg.getBytes());
         byte[] resp = ZtSocket.recv(fd, 1024);
         long rtt = System.currentTimeMillis() - t0;
 
         if (resp != null) {
-            log("Client received: " + new String(resp));
-            log("Loopback RTT: " + rtt + "ms");
-            log("=== LOOPBACK TEST PASSED ===");
+            log("libzt got: " + new String(resp));
+            log("P2P RTT: " + rtt + "ms (connect: " + connTime + "ms)");
+            log("=== P2P TEST PASSED ===");
         } else {
-            log("=== LOOPBACK TEST FAILED - no response ===");
+            log("=== P2P FAILED: no response ===");
         }
         ZtSocket.closeSocket(fd);
     }

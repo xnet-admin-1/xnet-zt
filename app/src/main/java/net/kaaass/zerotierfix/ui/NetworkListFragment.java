@@ -256,7 +256,6 @@ public class NetworkListFragment extends Fragment {
             speedStatus.setText("Testing latency...");
             v.setEnabled(false);
             new Thread(() -> net.kaaass.zerotierfix.util.SpeedTestClient.run(
-                NetworkListFragment.this.mBoundService,
                 new net.kaaass.zerotierfix.util.SpeedTestClient.Callback() {
                     public void onLatency(double ms) { speedPing.post(() -> {
                         speedPing.setText(String.format("%.0f", ms));

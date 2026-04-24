@@ -121,18 +121,17 @@ public class TunTapAdapter implements VirtualNetworkFrameListener {
                 }
                 try {
                     Log.d(TunTapAdapter.TAG, "TUN Receive Thread Started");
-                    byte[] buffer = new byte[65535];
+                    byte[] buffer = new byte[1500];
                     while (!isInterrupted()) {
                         try {
                             int readCount = TunTapAdapter.this.in.read(buffer);
                             if (readCount > 0) {
-                                byte[] readData = new byte[readCount];
-                                System.arraycopy(buffer, 0, readData, 0, readCount);
-                                byte iPVersion = IPPacketUtils.getIPVersion(readData);
+                                byte[] pkt = java.util.Arrays.copyOf(buffer, readCount);
+                                byte iPVersion = IPPacketUtils.getIPVersion(pkt);
                                 if (iPVersion == 4) {
-                                    TunTapAdapter.this.handleIPv4Packet(readData);
+                                    TunTapAdapter.this.handleIPv4Packet(pkt);
                                 } else if (iPVersion == 6) {
-                                    TunTapAdapter.this.handleIPv6Packet(readData);
+                                    TunTapAdapter.this.handleIPv6Packet(pkt);
                                 }
                             } else if (readCount < 0) {
                                 break;

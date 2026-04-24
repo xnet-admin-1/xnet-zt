@@ -14,3 +14,5 @@
 .cxx
 local.properties
 .idea
+externals/libzt-jni/build/
+externals/libzt-jni/.cxx/

@@ -246,6 +246,29 @@ public class NetworkListFragment extends Fragment {
         appVersionView.setText(String.format(getString(R.string.app_version_format),
                 BuildConfig.VERSION_NAME));
 
+        // Speed test
+        View speedCard = view.findViewById(R.id.speed_test_card);
+        TextView speedResult = view.findViewById(R.id.speed_test_result);
+        view.findViewById(R.id.speed_test_btn).setOnClickListener(v -> {
+            speedCard.setVisibility(View.VISIBLE);
+            speedResult.setText("Testing...");
+            new Thread(() -> net.kaaass.zerotierfix.util.SpeedTestClient.run(
+                new net.kaaass.zerotierfix.util.SpeedTestClient.Callback() {
+                    private String lat = "", dl = "", ul = "";
+                    private void update() { speedResult.post(() -> speedResult.setText(
+                        (lat.isEmpty() ? "" : "Ping: " + lat) +
+                        (dl.isEmpty() ? "" : "  ↓ " + dl) +
+                        (ul.isEmpty() ? "" : "  ↑ " + ul))); }
+                    public void onLatency(double ms) { lat = String.format("%.0fms", ms); update(); }
+                    public void onDownload(double mbps) { dl = String.format("%.1f Mbps", mbps); update(); }
+                    public void onUpload(double mbps) { ul = String.format("%.1f Mbps", mbps); update(); }
+                    public void onError(String msg) { speedResult.post(() -> speedResult.setText("Error: " + msg)); }
+                }
+            )).start();
+        });
+        speedCard.setVisibility(View.VISIBLE);
+        speedResult.setText("Tap Speed Test to measure");
+
         // 加载网络数据
         updateNetworkListAndNotify();
 

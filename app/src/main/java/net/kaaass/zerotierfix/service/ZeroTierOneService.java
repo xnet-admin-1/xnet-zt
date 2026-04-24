@@ -929,9 +929,8 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
 
         // 配置 MTU
         int mtu = virtualNetworkConfig.getMtu();
-        Log.i(TAG, "MTU from Network Config: " + mtu);
-        if (mtu == 0) {
-            mtu = 2800;
+        if (mtu == 0 || mtu > 1400) {
+            mtu = 1400;
         }
         Log.i(TAG, "MTU Set: " + mtu);
         builder.setMtu(mtu);

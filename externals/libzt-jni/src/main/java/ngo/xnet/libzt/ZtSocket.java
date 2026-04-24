@@ -17,6 +17,7 @@ public class ZtSocket {
 
     public static native int start(String path, EventCallback callback, int port);
     public static native int stop();
+    public static native int coreRunning();
     public static native int join(long nwid);
     public static native int leave(long nwid);
     public static native long getNodeId();

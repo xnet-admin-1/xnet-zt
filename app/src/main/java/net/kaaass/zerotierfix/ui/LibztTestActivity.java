@@ -88,12 +88,17 @@ public class LibztTestActivity extends AppCompatActivity {
         log("Waiting for NODE_ONLINE...");
         for (int i = 0; i < 30 && !online[0]; i++) {
             try { Thread.sleep(1000); } catch (Exception e) { break; }
-            if (i % 5 == 4) log("Still waiting... (" + (i+1) + "s)");
+            if (i % 5 == 4) {
+                long nodeId = ZtSocket.getNodeId();
+                int running = ZtSocket.coreRunning();
+                log("Still waiting... (" + (i+1) + "s) nodeId=" + Long.toHexString(nodeId) + " coreRunning=" + running);
+            }
         }
         if (!online[0]) {
-            log("TIMEOUT: node never came online. Is VPN off? Is internet available?");
             long nodeId = ZtSocket.getNodeId();
+            log("TIMEOUT: node never came online.");
             log("Node ID: " + Long.toHexString(nodeId));
+            log("Make sure: 1) ZT VPN is disconnected  2) Internet works  3) Force-stopped app before install");
             return;
         }
 

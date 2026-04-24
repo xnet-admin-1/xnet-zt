@@ -70,6 +70,11 @@ Java_ngo_xnet_libzt_ZtSocket_stop(JNIEnv *env, jclass clazz) {
 }
 
 JNIEXPORT jint JNICALL
+Java_ngo_xnet_libzt_ZtSocket_coreRunning(JNIEnv *env, jclass clazz) {
+    return zts_get_node_status();
+}
+
+JNIEXPORT jint JNICALL
 Java_ngo_xnet_libzt_ZtSocket_join(JNIEnv *env, jclass clazz, jlong nwid) {
     LOGI("zts_join nwid=%llx", (unsigned long long)nwid);
     return zts_join((uint64_t)nwid);

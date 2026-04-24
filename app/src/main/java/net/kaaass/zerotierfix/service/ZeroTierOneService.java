@@ -955,12 +955,12 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
         this.out = new FileOutputStream(this.vpnSocket.getFileDescriptor());
         this.tunTapAdapter.setVpnSocket(this.vpnSocket);
         this.tunTapAdapter.setFileStreams(this.in, this.out);
-        this.tunTapAdapter.setNativeTxActive(true);
+        this.tunTapAdapter.setNativeTxActive(false);
         this.tunTapAdapter.startThreads();
         try { Node.setTunFd(this.vpnSocket.getFd()); } catch (Exception e) { Log.w(TAG, "setTunFd: " + e); }
         try {
             long mac = virtualNetworkConfig.getMac();
-            Node.startNativeTx(this.node.getNodeId(), networkId, mac);
+            // Node.startNativeTx(this.node.getNodeId(), networkId, mac);
             Log.i(TAG, "Native TX started mac=" + Long.toHexString(mac));
         } catch (Exception e) { Log.w(TAG, "startNativeTx: " + e); }
 

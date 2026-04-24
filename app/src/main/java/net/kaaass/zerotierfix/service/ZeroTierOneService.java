@@ -359,6 +359,8 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
                     this.svrSocket = new DatagramSocket(null);
                     this.svrSocket.setReuseAddress(true);
                     this.svrSocket.setSoTimeout(1000);
+                    this.svrSocket.setReceiveBufferSize(1024 * 1024);
+                    this.svrSocket.setSendBufferSize(1024 * 1024);
                     this.svrSocket.bind(new InetSocketAddress(9994));
                 }
                 if (!protect(this.svrSocket)) {

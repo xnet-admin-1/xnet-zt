@@ -59,13 +59,14 @@ public class LibztTestActivity extends AppCompatActivity {
         new java.io.File(path).mkdirs();
 
         log("Starting libzt...");
+        final boolean[] online = {false};
         int rc = ZtSocket.start(path, new ZtSocket.EventCallback() {
             @Override
             public void onEvent(int code) {
                 String name;
                 switch (code) {
                     case 0: name = "NODE_UP"; break;
-                    case 2: name = "NODE_ONLINE"; break;
+                    case 2: name = "NODE_ONLINE"; online[0] = true; break;
                     case 34: name = "REQUESTING_CONFIG"; break;
                     case 35: name = "NETWORK_OK"; break;
                     case 36: name = "ACCESS_DENIED"; break;
@@ -80,8 +81,21 @@ public class LibztTestActivity extends AppCompatActivity {
                 log("Address: " + addr);
                 myAddr = addr;
             }
-        });
+        }, 9994);
         log("zts_start rc=" + rc);
+
+        // Wait for node to come online
+        log("Waiting for NODE_ONLINE...");
+        for (int i = 0; i < 30 && !online[0]; i++) {
+            try { Thread.sleep(1000); } catch (Exception e) { break; }
+            if (i % 5 == 4) log("Still waiting... (" + (i+1) + "s)");
+        }
+        if (!online[0]) {
+            log("TIMEOUT: node never came online. Is VPN off? Is internet available?");
+            long nodeId = ZtSocket.getNodeId();
+            log("Node ID: " + Long.toHexString(nodeId));
+            return;
+        }
 
         log("Joining network " + Long.toHexString(NWID) + "...");
         rc = ZtSocket.join(NWID);

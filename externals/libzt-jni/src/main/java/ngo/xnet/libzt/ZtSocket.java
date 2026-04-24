@@ -15,7 +15,7 @@ public class ZtSocket {
     public static final int ZTS_EVENT_NETWORK_READY_IP4 = 37;
     public static final int ZTS_EVENT_STACK_UP = 48;
 
-    public static native int start(String path, EventCallback callback);
+    public static native int start(String path, EventCallback callback, int port);
     public static native int stop();
     public static native int join(long nwid);
     public static native int leave(long nwid);

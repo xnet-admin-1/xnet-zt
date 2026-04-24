@@ -51,15 +51,15 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
 }
 
 JNIEXPORT jint JNICALL
-Java_ngo_xnet_libzt_ZtSocket_start(JNIEnv *env, jclass clazz, jstring path, jobject callback) {
+Java_ngo_xnet_libzt_ZtSocket_start(JNIEnv *env, jclass clazz, jstring path, jobject callback, jint port) {
     g_callback = (*env)->NewGlobalRef(env, callback);
     jclass cls = (*env)->GetObjectClass(env, callback);
     g_onEvent = (*env)->GetMethodID(env, cls, "onEvent", "(I)V");
     g_onAddress = (*env)->GetMethodID(env, cls, "onAddress", "(Ljava/lang/String;)V");
 
     const char *cpath = (*env)->GetStringUTFChars(env, path, NULL);
-    LOGI("zts_start path=%s", cpath);
-    int rc = zts_start(cpath, zt_callback, 0);
+    LOGI("zts_start path=%s port=%d", cpath, (int)port);
+    int rc = zts_start(cpath, zt_callback, (int)port);
     (*env)->ReleaseStringUTFChars(env, path, cpath);
     return rc;
 }

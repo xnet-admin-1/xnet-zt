@@ -34,8 +34,8 @@ public class SpeedTestClient {
             s.connect(new InetSocketAddress(SERVER, PORT), TIMEOUT);
             s.setSoTimeout(TIMEOUT);
             s.setTcpNoDelay(true);
-            s.setReceiveBufferSize(512 * 1024);
-            s.setSendBufferSize(512 * 1024);
+            s.setReceiveBufferSize(2 * 1024 * 1024);
+            s.setSendBufferSize(2 * 1024 * 1024);
             OutputStream out = s.getOutputStream();
             InputStream in = s.getInputStream();
             byte[] buf = new byte[BUF];

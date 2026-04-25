@@ -4,7 +4,6 @@ import android.net.VpnService;
 import android.util.Log;
 import java.io.*;
 import java.net.*;
-import java.nio.channels.SocketChannel;
 
 public class PortForwarder {
     private static final String TAG = "PortForwarder";
@@ -22,11 +21,17 @@ public class PortForwarder {
                 while (!Thread.interrupted()) {
                     Socket in = server.accept();
                     try {
-                        SocketChannel ch = SocketChannel.open();
-                        boolean ok = vpn != null && vpn.protect(ch.socket());
-                        RemoteLog.log(TAG, "protect=" + ok);
-                        ch.socket().connect(new InetSocketAddress(targetHost, targetPort), 5000);
-                        Socket out = ch.socket();
+                        // Create socket, protect fd from VPN, then connect
+                        Socket out = new Socket();
+                        out.setReuseAddress(true);
+                        out.bind(new InetSocketAddress(0));
+                        if (vpn != null) {
+                            boolean ok = vpn.protect(out);
+                            RemoteLog.log(TAG, "protect=" + ok);
+                        }
+                        out.connect(new InetSocketAddress(targetHost, targetPort), 5000);
+                        out.setTcpNoDelay(true);
+                        in.setTcpNoDelay(true);
                         RemoteLog.log(TAG, "connected to " + targetHost + ":" + targetPort);
                         pipe(in, out);
                         pipe(out, in);

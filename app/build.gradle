@@ -26,8 +26,8 @@ android {
         applicationId "ngo.xnet.zerotier"
         minSdk 24
         targetSdk 34
-        versionCode 218
-        versionName "2.1.8"
+        versionCode 219
+        versionName "2.1.9"
         multiDexEnabled true
 
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'

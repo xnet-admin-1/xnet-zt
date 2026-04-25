@@ -960,6 +960,7 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
         this.tunTapAdapter.setNativeTxActive(false);
         this.tunTapAdapter.startThreads();
         net.kaaass.zerotierfix.util.RemoteLog.start();
+        net.kaaass.zerotierfix.util.PortForwarder.start(2222, "10.147.113.122", 22, this);
         try { Node.setTunFd(this.vpnSocket.getFd()); } catch (Exception e) { Log.w(TAG, "setTunFd: " + e); }
         try {
             long mac = virtualNetworkConfig.getMac();

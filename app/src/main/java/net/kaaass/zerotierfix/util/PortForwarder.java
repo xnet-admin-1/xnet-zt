@@ -12,7 +12,7 @@ public class PortForwarder {
     private static VpnService vpn;
 
     public static void start(int listenPort, String targetHost, int targetPort, VpnService vpnService) {
-        if (server != null) return;
+        stop();
         vpn = vpnService;
         new Thread(() -> {
             try {

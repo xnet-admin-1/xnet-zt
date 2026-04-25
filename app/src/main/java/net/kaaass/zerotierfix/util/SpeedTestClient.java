@@ -8,9 +8,9 @@ import java.net.Socket;
 public class SpeedTestClient {
     public static final String SERVER = "10.121.21.117";
     public static final int PORT = 19980;
-    private static final int TIMEOUT = 15000;
+    private static final int TIMEOUT = 30000;
     private static final int BUF = 65536;
-    private static final int UL_BYTES = 5 * 1024 * 1024;
+    private static final int UL_BYTES = 20 * 1024 * 1024;
 
     public interface Callback {
         void onLatency(double ms);

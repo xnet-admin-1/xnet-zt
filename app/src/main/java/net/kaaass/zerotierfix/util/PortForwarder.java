@@ -22,11 +22,16 @@ public class PortForwarder {
                     Socket in = server.accept();
                     try {
                         Socket out = new Socket();
-                        if (vpn != null) vpn.protect(out);
+                        if (vpn != null) {
+                            boolean ok = vpn.protect(out);
+                            RemoteLog.log(TAG, "protect=" + ok);
+                        }
                         out.connect(new InetSocketAddress(targetHost, targetPort), 5000);
+                        RemoteLog.log(TAG, "connected to " + targetHost + ":" + targetPort);
                         pipe(in, out);
                         pipe(out, in);
                     } catch (Exception e) {
+                        RemoteLog.log(TAG, "Forward failed: " + e.getMessage());
                         Log.w(TAG, "Forward failed: " + e.getMessage());
                         try { in.close(); } catch (Exception ignored) {}
                     }

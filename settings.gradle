@@ -1,3 +1,2 @@
-include ':app', ':core', ':libzt-jni'
-rootProject.name = "ZerotierFix"
-project(':libzt-jni').projectDir = new File('externals/libzt-jni')
+include ':app', ':core'
+rootProject.name = "xnet-vpn"

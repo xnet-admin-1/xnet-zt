@@ -3,20 +3,24 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.NEARBY_WIFI_DEVICES" android:usesPermissionFlags="neverForLocation" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
 
     <application
-        android:name="net.kaaass.zerotierfix.ZerotierFixApplication"
+        android:name="ngo.xnet.vpn.XnetApplication"
         android:allowBackup="true"
         android:appComponentFactory="androidx.core.app.CoreComponentFactory"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.ZerotierFix"
+        android:theme="@style/Theme.Xnet"
         android:usesCleartextTraffic="true">
         <service
             android:name=".service.ZeroTierOneService"
@@ -57,6 +61,9 @@
         <activity
             android:name=".ui.PeerListActivity"
             android:label="@string/peer_list" />
+        <activity
+            android:name=".ui.PortForwardActivity"
+            android:label="Port Forward" />
 
         <receiver
             android:name=".service.StartupReceiver"

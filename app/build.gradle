@@ -5,12 +5,12 @@ plugins {
 
 greendao {
     schemaVersion 22
-    daoPackage 'net.kaaass.zerotierfix.model'
+    daoPackage 'ngo.xnet.vpn.model'
 }
 
 android {
     compileSdk 34
-    namespace 'net.kaaass.zerotierfix'
+    namespace 'ngo.xnet.vpn'
 
     buildFeatures {
         buildConfig true
@@ -23,7 +23,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "ngo.xnet.zerotier"
+        applicationId "ngo.xnet.vpn"
         minSdk 24
         targetSdk 34
         versionCode 222

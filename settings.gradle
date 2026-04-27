@@ -1,2 +1,2 @@
 include ':app', ':core'
-rootProject.name = "ZerotierFix"
+rootProject.name = "xnet-vpn"

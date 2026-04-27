@@ -1,2 +1,2 @@
-ninja: Entering directory `/home/xnet-admin/projects/xnet-zt/externals/libzt-jni/.cxx/Debug/72411y4z/arm64-v8a'
+ninja: Entering directory `/home/xnet-admin/projects/xnet-vpn/externals/libzt-jni/.cxx/Debug/72411y4z/arm64-v8a'
 ninja: no work to do.

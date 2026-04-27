@@ -1,2 +1,3 @@
-include ':app', ':core'
+include ':app', ':core', ':libzt-jni'
 rootProject.name = "xnet-vpn"
+project(':libzt-jni').projectDir = new File('externals/libzt-jni')

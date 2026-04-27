@@ -34,19 +34,26 @@ public class PortForwardActivity extends AppCompatActivity {
     private void refresh() {
         statusText.setText("Scanning...");
         deviceList.removeAllViews();
+        ngo.xnet.vpn.util.RemoteLog.log("PortForward", "refresh() called");
         new Thread(() -> {
-            List<DeviceDiscovery.Device> devices = DeviceDiscovery.findTetheredDevices();
-            handler.post(() -> {
-                deviceList.removeAllViews();
-                if (devices.isEmpty()) {
-                    statusText.setText("No tethered devices found");
-                    return;
-                }
-                statusText.setText(devices.size() + " device(s) found");
-                for (DeviceDiscovery.Device dev : devices) {
-                    addDeviceRow(dev);
-                }
-            });
+            try {
+                List<DeviceDiscovery.Device> devices = DeviceDiscovery.findTetheredDevices(PortForwardActivity.this);
+                ngo.xnet.vpn.util.RemoteLog.log("PortForward", "scan done: " + devices.size());
+                handler.post(() -> {
+                    deviceList.removeAllViews();
+                    if (devices.isEmpty()) {
+                        statusText.setText("No tethered devices found");
+                        return;
+                    }
+                    statusText.setText(devices.size() + " device(s) found");
+                    for (DeviceDiscovery.Device dev : devices) {
+                        addDeviceRow(dev);
+                    }
+                });
+            } catch (Throwable t) {
+                ngo.xnet.vpn.util.RemoteLog.log("PortForward", "CRASH: " + t);
+                handler.post(() -> statusText.setText("Error: " + t.getMessage()));
+            }
         }).start();
     }
 
@@ -58,7 +65,7 @@ public class PortForwardActivity extends AppCompatActivity {
         Switch toggle = row.findViewById(R.id.forward_toggle);
 
         ipText.setText(dev.ip);
-        macText.setText(dev.mac);
+        macText.setText(dev.name);
         String saved = portSpecs.get(dev.ip);
         if (saved != null) portsInput.setText(saved);
         toggle.setChecked(PortForwarder.isActive(dev.ip));

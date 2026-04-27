@@ -1,6 +1,12 @@
 package ngo.xnet.vpn.util;
 
+import android.net.ConnectivityManager;
+import android.net.LinkAddress;
+import android.net.LinkProperties;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.net.VpnService;
+import android.content.Context;
 import android.util.Log;
 import java.io.*;
 import java.net.*;
@@ -11,6 +17,7 @@ public class PortForwarder {
     private static final String TAG = "PortForwarder";
     private static final Map<String, List<ServerSocket>> activeForwards = new ConcurrentHashMap<>();
     private static VpnService vpn;
+    private static Network tetherNet;
 
     public static List<int[]> parsePorts(String spec) {
         List<int[]> ports = new ArrayList<>();
@@ -33,6 +40,8 @@ public class PortForwarder {
     public static void startForDevice(String targetHost, String portSpec, VpnService vpnService) {
         stopForDevice(targetHost);
         vpn = vpnService;
+        tetherNet = findTetherNetwork(vpnService);
+        RemoteLog.log(TAG, "tetherNet=" + tetherNet + " for " + targetHost);
         List<int[]> ports = parsePorts(portSpec);
         List<ServerSocket> servers = new ArrayList<>();
         for (int[] pp : ports) {
@@ -48,9 +57,11 @@ public class PortForwarder {
                             Socket in = ss.accept();
                             try {
                                 Socket out = new Socket();
-                                out.setReuseAddress(true);
-                                out.bind(new InetSocketAddress(0));
-                                if (vpn != null) vpn.protect(out);
+                                if (tetherNet != null) {
+                                    tetherNet.bindSocket(out);
+                                } else if (vpn != null) {
+                                    vpn.protect(out);
+                                }
                                 out.connect(new InetSocketAddress(targetHost, targetPort), 5000);
                                 out.setTcpNoDelay(true);
                                 in.setTcpNoDelay(true);
@@ -88,12 +99,27 @@ public class PortForwarder {
         return servers != null && !servers.isEmpty();
     }
 
-    // Legacy single-target API
-    public static void start(int listenPort, String targetHost, int targetPort, VpnService vpnService) {
-        startForDevice(targetHost, String.valueOf(listenPort), vpnService);
+    private static Network findTetherNetwork(Context ctx) {
+        try {
+            ConnectivityManager cm = (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
+            for (Network net : cm.getAllNetworks()) {
+                NetworkCapabilities caps = cm.getNetworkCapabilities(net);
+                if (caps == null || caps.hasTransport(NetworkCapabilities.TRANSPORT_VPN)) continue;
+                LinkProperties lp = cm.getLinkProperties(net);
+                if (lp == null) continue;
+                for (LinkAddress la : lp.getLinkAddresses()) {
+                    InetAddress addr = la.getAddress();
+                    if (addr instanceof Inet4Address) {
+                        String ip = addr.getHostAddress();
+                        if (!ip.startsWith("10.121.") && (ip.startsWith("10.") || ip.startsWith("192.168.") || ip.startsWith("172."))) {
+                            return net;
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) { Log.w(TAG, "findTetherNetwork: " + e); }
+        return null;
     }
-
-    public static void stop() { stopAll(); }
 
     private static void pipe(Socket from, Socket to) {
         new Thread(() -> {

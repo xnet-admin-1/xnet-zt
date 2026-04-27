@@ -54,6 +54,9 @@
         <activity
             android:name=".ui.PeerListActivity"
             android:label="@string/peer_list" />
+        <activity
+            android:name=".ui.PortForwardActivity"
+            android:label="Port Forward" />
 
         <receiver
             android:name=".service.StartupReceiver"

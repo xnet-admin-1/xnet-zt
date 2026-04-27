@@ -88,6 +88,9 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
     private static final String[] DISALLOWED_APPS = {"com.android.vending"};
     private static final String TAG = "ZT1_Service";
     private static final int ZT_NOTIFICATION_TAG = 5919812;
+    private static ZeroTierOneService sInstance;
+
+    public static ZeroTierOneService getInstance() { return sInstance; }
     private final IBinder mBinder = new ZeroTierBinder();
     private final DataStore dataStore = new DataStore(this);
     private final EventBus eventBus = EventBus.getDefault();
@@ -266,6 +269,7 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
     public int onStartCommand(Intent intent, int flags, int startId) {
         long networkId;
         Log.d(TAG, "onStartCommand");
+        sInstance = this;
 
         // Must call startForeground immediately on Android 14+
         if (Build.VERSION.SDK_INT >= 26) {

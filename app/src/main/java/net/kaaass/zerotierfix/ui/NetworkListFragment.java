@@ -364,6 +364,9 @@ public class NetworkListFragment extends Fragment {
             Log.d(TAG, "Selected orbit");
             startActivity(new Intent(getActivity(), MoonOrbitActivity.class));
             return true;
+        } else if (menuId == R.id.menu_item_port_forward) {
+            startActivity(new Intent(getActivity(), PortForwardActivity.class));
+            return true;
         }
         return super.onOptionsItemSelected(menuItem);
     }

@@ -14,5 +14,10 @@
 .cxx
 local.properties
 .idea
+<<<<<<< HEAD
+externals/libzt-jni/build/
+externals/libzt-jni/.cxx/
+=======
 externals/libzt
 externals/libzt-jni/build/
+>>>>>>> port-forward

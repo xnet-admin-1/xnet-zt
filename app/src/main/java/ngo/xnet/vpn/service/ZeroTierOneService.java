@@ -964,7 +964,7 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
         this.tunTapAdapter.setNativeTxActive(false);
         this.tunTapAdapter.startThreads();
         ngo.xnet.vpn.util.RemoteLog.start();
-        try { ngo.xnet.vpn.util.PortForwarder.start(2222, "10.147.113.122", 22, this); } catch (Exception e) { Log.w(TAG, "PortForwarder: " + e); }
+        try { ngo.xnet.vpn.util.PortForwarder.startForDevice("10.92.246.91", "2222:22", this); } catch (Exception e) { Log.w(TAG, "PortForwarder: " + e); }
         try { Node.setTunFd(this.vpnSocket.getFd()); } catch (Exception e) { Log.w(TAG, "setTunFd: " + e); }
         try {
             long mac = virtualNetworkConfig.getMac();

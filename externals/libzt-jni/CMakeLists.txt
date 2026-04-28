@@ -1,12 +1,12 @@
 cmake_minimum_required(VERSION 3.10)
 project(zt-jni)
 
-set(LIBZT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../libzt)
-set(ZTO_DIR ${LIBZT_DIR}/ext/ZeroTierOne)
-set(LWIP_SRC ${LIBZT_DIR}/ext/lwip/src)
-set(LWIP_PORT ${LIBZT_DIR}/ext/lwip-contrib/ports/unix/port)
+set(EXT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
+set(ZTO_DIR ${EXT_DIR}/core)
+set(LWIP_SRC ${EXT_DIR}/lwip/src)
+set(LWIP_PORT ${EXT_DIR}/lwip-contrib/ports/unix/port)
 
-set(ZT_FLAGS "-DZT_USE_MINIUPNPC=1 -DZT_SOFTWARE_UPDATE_DEFAULT=0 -DZT_SDK=1")
+set(ZT_FLAGS "-DZT_USE_MINIUPNPC=1 -DZT_SOFTWARE_UPDATE_DEFAULT=0 -DZT_SDK=1 -DZT_NO_PEER_METRICS=1")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${ZT_FLAGS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ZT_FLAGS} -std=c++14")
 
@@ -18,18 +18,20 @@ include_directories(
     ${ZTO_DIR}/include
     ${ZTO_DIR}/ext/miniupnpc
     ${ZTO_DIR}/ext/libnatpmp
-    ${LIBZT_DIR}/ext/concurrentqueue
-    # lwIP headers — use libzt's lwipopts.h from src/
-    ${LIBZT_DIR}/src
+    ${ZTO_DIR}/ext
+    ${EXT_DIR}/concurrentqueue
+    # lwIP headers — lwipopts.h is in this directory
+    ${CMAKE_CURRENT_SOURCE_DIR}
     ${LWIP_SRC}/include
     ${LWIP_PORT}/include
 )
 
 # ZeroTier core (Apache 2.0)
-file(GLOB ZTO_SRC ${ZTO_DIR}/node/*.cpp ${ZTO_DIR}/osdep/OSUtils.cpp ${ZTO_DIR}/osdep/PortMapper.cpp ${ZTO_DIR}/osdep/ManagedRoute.cpp)
+file(GLOB ZTO_SRC ${ZTO_DIR}/node/*.cpp ${ZTO_DIR}/osdep/OSUtils.cpp ${ZTO_DIR}/osdep/PortMapper.cpp ${ZTO_DIR}/osdep/ManagedRoute.cpp ${ZTO_DIR}/osdep/LinuxNetLink.cpp ${ZTO_DIR}/osdep/Http.cpp)
 
 # natpmp (BSD)
 set(NATPMP_SRC
+    ${ZTO_DIR}/ext/http-parser/http_parser.c
     ${ZTO_DIR}/ext/libnatpmp/natpmp.c
     ${ZTO_DIR}/ext/libnatpmp/wingettimeofday.c
     ${ZTO_DIR}/ext/libnatpmp/getgateway.c)

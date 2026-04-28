@@ -53,9 +53,6 @@
             android:name=".ui.view.NetworkDetailActivity"
             android:label="@string/network_detail" />
         <activity
-            android:name=".ui.LibztTestActivity"
-            android:label="libzt Test" />
-        <activity
             android:name=".ui.MoonOrbitActivity"
             android:label="@string/moon_orbit_activity" />
         <activity

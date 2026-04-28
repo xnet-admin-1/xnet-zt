@@ -12,7 +12,4 @@
     <item
         android:id="@+id/menu_item_settings"
         android:title="@string/settings" />
-    <item
-        android:id="@+id/menu_item_libzt_test"
-        android:title="libzt Test" />
 </menu>

@@ -59,6 +59,15 @@ public class DnsProxy {
     public void setDohUrl(String url) { this.dohUrl = url; }
     public void setPort(int port) { this.port = port; }
 
+    /** Set upstream DNS server for plain UDP forwarding (used in TUNNEL mode). */
+    private InetAddress upstreamDns;
+    private int upstreamDnsPort = 53;
+
+    public void setUpstreamDns(InetAddress addr, int port) {
+        this.upstreamDns = addr;
+        this.upstreamDnsPort = port;
+    }
+
     public void start(InetAddress bindAddress) {
         if (running) return;
         running = true;
@@ -83,7 +92,7 @@ public class DnsProxy {
 
     private void runServer(InetAddress bindAddress) {
         try {
-            socket = bridge.createUpstreamDatagramSocket();
+            socket = new DatagramSocket(null);
             socket.setReuseAddress(true);
             socket.bind(new InetSocketAddress(bindAddress, port));
             Log.i(TAG, "Listening on " + bindAddress.getHostAddress() + ":" + port);
@@ -116,14 +125,37 @@ public class DnsProxy {
                 return;
             }
 
-            // Resolve via DoH
-            byte[] response = resolveDoH(query);
+            // Resolve via upstream UDP DNS or DoH
+            byte[] response;
+            if (upstreamDns != null) {
+                response = resolveUdp(query);
+            } else {
+                response = resolveDoH(query);
+            }
             if (response != null) {
                 cache.put(name, new CacheEntry(response, extractTtlMs(response)));
                 sendResponse(response, clientAddr, clientPort);
             }
         } catch (Exception e) {
             Log.w(TAG, "Query handling error", e);
+        }
+    }
+
+    /** Forward DNS query via plain UDP to upstream DNS server. */
+    private byte[] resolveUdp(byte[] query) throws Exception {
+        DatagramSocket ds = new DatagramSocket();
+        try {
+            ds.setSoTimeout(5000);
+            DatagramPacket req = new DatagramPacket(query, query.length, upstreamDns, upstreamDnsPort);
+            ds.send(req);
+            byte[] buf = new byte[512];
+            DatagramPacket resp = new DatagramPacket(buf, buf.length);
+            ds.receive(resp);
+            byte[] result = new byte[resp.getLength()];
+            System.arraycopy(resp.getData(), 0, result, 0, resp.getLength());
+            return result;
+        } finally {
+            ds.close();
         }
     }
 

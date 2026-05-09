@@ -1232,10 +1232,16 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
         try {
             if (tetherConfig.isDnsEnabled() && (dnsProxy == null || !dnsProxy.isRunning())) {
                 dnsProxy = new DnsProxy(tetherBridge);
-                int dnsPort = tetherConfig.getDnsPort();
-                if (dnsPort < 1024) dnsPort = 5353;
-                dnsProxy.setPort(dnsPort);
-                dnsProxy.setDohUrl(tetherConfig.getDohUrl());
+                dnsProxy.setPort(tetherConfig.getDnsPort());
+                // In TUNNEL mode, forward DNS to exit node; otherwise use DoH
+                if (tetherBridge.getSocketMode() == TetherBridge.SocketMode.TUNNEL) {
+                    try {
+                        dnsProxy.setUpstreamDns(
+                                java.net.InetAddress.getByName("10.121.21.117"), 53);
+                    } catch (Exception ignored) {}
+                } else {
+                    dnsProxy.setDohUrl(tetherConfig.getDohUrl());
+                }
                 dnsProxy.start(bindAddr);
             }
             if (tetherConfig.isProxyEnabled()) {
@@ -1252,7 +1258,7 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
             }
             ngo.xnet.vpn.util.RemoteLog.log(TAG, "Proxies started on " + bindAddr.getHostAddress()
                     + " SOCKS:" + tetherConfig.getSocksPort() + " HTTP:" + tetherConfig.getHttpPort()
-                    + " DNS:" + (tetherConfig.getDnsPort() < 1024 ? 5353 : tetherConfig.getDnsPort())
+                    + " DNS:" + tetherConfig.getDnsPort()
                     + " mode=" + tetherBridge.getSocketMode());
         } catch (Exception e) {
             Log.e(TAG, "Failed to start proxies", e);

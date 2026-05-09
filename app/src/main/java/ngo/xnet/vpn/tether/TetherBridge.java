@@ -181,4 +181,11 @@ public class TetherBridge implements TetherDetector.Listener, UpstreamSelector.L
             catch (Exception e) { Log.w(TAG, "StateListener error", e); }
         }
     }
+
+    /** Total bytes transferred across all proxy services. */
+    public long getTotalBytesTransferred() {
+        // Proxies are managed by ZeroTierOneService, not directly here.
+        // This is a placeholder — actual aggregation done in service.
+        return 0;
+    }
 }

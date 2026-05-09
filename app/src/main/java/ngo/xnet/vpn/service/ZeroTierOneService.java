@@ -1188,6 +1188,7 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
                 }
             }
             Log.i(TAG, "Tether proxies started on " + bindAddr.getHostAddress());
+            ngo.xnet.vpn.util.RemoteLog.log(TAG, "Proxies started on " + bindAddr.getHostAddress() + " SOCKS:" + tetherConfig.getSocksPort() + " HTTP:" + tetherConfig.getHttpPort() + " DNS:" + tetherConfig.getDnsPort());
         } catch (Exception e) {
             Log.e(TAG, "Failed to start proxies", e);
         }
@@ -1210,10 +1211,27 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
     public NatEngine getNatEngine() { return natEngine; }
     public TetherBridge getTetherBridge() { return tetherBridge; }
 
+    /** Aggregate bytes from all tether proxy services + NatEngine. */
+    public long getTetherBytesTransferred() {
+        long total = 0;
+        if (natEngine != null) total += natEngine.getBytesForwarded();
+        if (socksProxy != null) total += socksProxy.getBytesTransferred();
+        if (httpProxy != null) total += httpProxy.getBytesTransferred();
+        return total;
+    }
+
+    /** Active connections: NatEngine tracked + 1 per active tether interface. */
+    public int getTetherActiveClients() {
+        int count = 0;
+        if (natEngine != null) count += natEngine.getActiveConnections();
+        if (tetherBridge != null) count += tetherBridge.getDetector().getActiveInterfaces().size();
+        return count;
+    }
+
     private void updateTetherNotification() {
-        if (notificationManager == null || natEngine == null) return;
-        int conns = natEngine.getActiveConnections();
-        long bytes = natEngine.getBytesForwarded();
+        if (notificationManager == null) return;
+        int conns = getTetherActiveClients();
+        long bytes = getTetherBytesTransferred();
         String xfer = formatBytesShort(bytes);
         String text = getString(R.string.tether_notification_active, conns, xfer);
 

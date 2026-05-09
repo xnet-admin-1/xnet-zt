@@ -857,11 +857,8 @@ public class NetworkListFragment extends Fragment {
                 var iface = ifaces.get(0);
                 ifaceView.setText(iface.name + " (" + iface.type.name() + ")");
             }
-            var nat = svc.getNatEngine();
-            if (nat != null) {
-                connsView.setText(String.valueOf(nat.getActiveConnections()));
-                xferView.setText(formatBytes(nat.getBytesForwarded()));
-            }
+            connsView.setText(String.valueOf(svc.getTetherActiveClients()));
+            xferView.setText(formatBytes(svc.getTetherBytesTransferred()));
         } else {
             stateView.setText(R.string.tether_state_error);
             dot.setBackgroundColor(0xFFF44336);

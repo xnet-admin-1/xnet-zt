@@ -44,6 +44,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@+id/speed_test_card"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
             android:layout_marginBottom="4dp" />
 
         <androidx.cardview.widget.CardView

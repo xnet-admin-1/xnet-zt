@@ -289,8 +289,6 @@ public class NetworkListFragment extends Fragment {
         updateNetworkListAndNotify();
 
         // Tether status card
-        View tetherCard = view.findViewById(R.id.tether_card_include);
-        tetherCard.setOnClickListener(v -> startActivity(new Intent(getActivity(), TetherSettingsActivity.class)));
         updateTetherCard(view);
 
         // 设置添加按钮

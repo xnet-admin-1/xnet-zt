@@ -1219,15 +1219,25 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
             // Check external IP from main process (VPN-excluded) to compare
             new Thread(() -> {
                 try {
+                    // Test 1: direct internet (should show cellular IP since VPN process excluded)
                     java.net.URL url = new java.net.URL("https://api.ipify.org");
                     java.net.HttpURLConnection c = (java.net.HttpURLConnection) url.openConnection();
                     c.setConnectTimeout(5000);
                     c.setReadTimeout(5000);
                     String ip = new String(c.getInputStream().readAllBytes()).trim();
                     c.disconnect();
-                    ngo.xnet.vpn.util.RemoteLog.log(TAG, "External IP (main/VPN process): " + ip);
+                    ngo.xnet.vpn.util.RemoteLog.log(TAG, "Direct IP (VPN process): " + ip);
                 } catch (Exception e) {
-                    ngo.xnet.vpn.util.RemoteLog.log(TAG, "IP check failed: " + e.getMessage());
+                    ngo.xnet.vpn.util.RemoteLog.log(TAG, "Direct IP check failed: " + e.getMessage());
+                }
+                try {
+                    // Test 2: can we reach exit node SOCKS at 10.121.21.117:1080?
+                    java.net.Socket s = new java.net.Socket();
+                    s.connect(new java.net.InetSocketAddress("10.121.21.117", 1080), 5000);
+                    s.close();
+                    ngo.xnet.vpn.util.RemoteLog.log(TAG, "Exit node SOCKS reachable from VPN process!");
+                } catch (Exception e) {
+                    ngo.xnet.vpn.util.RemoteLog.log(TAG, "Exit node SOCKS unreachable: " + e.getMessage());
                 }
             }).start();
         } catch (Exception e) {

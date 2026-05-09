@@ -14,7 +14,7 @@
             android:name="ngo.xnet.vpn.ui.NetworkListFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/speed_test_card"
+            android:layout_above="@+id/tether_card_include"
             android:layout_alignParentTop="true"
             android:clipToPadding="false"
             android:paddingBottom="8dp"
@@ -26,7 +26,7 @@
             android:id="@+id/no_data"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/speed_test_card"
+            android:layout_above="@+id/tether_card_include"
             android:layout_alignParentTop="true">
 
             <TextView
@@ -37,6 +37,14 @@
                 android:textColor="?attr/lightGreyText"
                 android:textSize="36sp" />
         </RelativeLayout>
+
+        <include
+            layout="@layout/view_tether_status"
+            android:id="@+id/tether_card_include"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/speed_test_card"
+            android:layout_marginBottom="4dp" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/speed_test_card"

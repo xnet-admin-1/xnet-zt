@@ -288,6 +288,11 @@ public class NetworkListFragment extends Fragment {
         // 加载网络数据
         updateNetworkListAndNotify();
 
+        // Tether status card
+        View tetherCard = view.findViewById(R.id.tether_card_include);
+        tetherCard.setOnClickListener(v -> startActivity(new Intent(getActivity(), TetherSettingsActivity.class)));
+        updateTetherCard(view);
+
         // 设置添加按钮
         FloatingActionButton fab = view.findViewById(R.id.fab_add_network);
         fab.setOnClickListener(parentView -> {
@@ -339,6 +344,7 @@ public class NetworkListFragment extends Fragment {
         updateNetworkListAndNotify();
         this.eventBus.post(new NetworkListRequestEvent());
         this.eventBus.post(new NodeStatusRequestEvent());
+        if (getView() != null) updateTetherCard(getView());
     }
 
     @Override
@@ -366,6 +372,9 @@ public class NetworkListFragment extends Fragment {
             return true;
         } else if (menuId == R.id.menu_item_port_forward) {
             startActivity(new Intent(getActivity(), PortForwardActivity.class));
+            return true;
+        } else if (menuId == R.id.menu_item_tether_settings) {
+            startActivity(new Intent(getActivity(), TetherSettingsActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(menuItem);
@@ -820,4 +829,50 @@ public class NetworkListFragment extends Fragment {
         }
     }
 
+    private void updateTetherCard(View root) {
+        TextView stateView = root.findViewById(R.id.tether_status_state);
+        View dot = root.findViewById(R.id.tether_status_dot);
+        View details = root.findViewById(R.id.tether_details);
+        TextView ifaceView = root.findViewById(R.id.tether_interface);
+        TextView connsView = root.findViewById(R.id.tether_connections);
+        TextView xferView = root.findViewById(R.id.tether_transferred);
+
+        var svc = ZeroTierOneService.getInstance();
+        var bridge = svc != null ? svc.getTetherBridge() : null;
+
+        if (bridge == null || bridge.getState() == ngo.xnet.vpn.tether.TetherBridge.State.IDLE) {
+            stateView.setText(R.string.tether_state_idle);
+            dot.setBackgroundColor(0xFF888888);
+            details.setVisibility(View.GONE);
+        } else if (bridge.getState() == ngo.xnet.vpn.tether.TetherBridge.State.DETECTING) {
+            stateView.setText(R.string.tether_state_detecting);
+            dot.setBackgroundColor(0xFFFF9800);
+            details.setVisibility(View.GONE);
+        } else if (bridge.getState() == ngo.xnet.vpn.tether.TetherBridge.State.ACTIVE) {
+            stateView.setText(R.string.tether_state_active);
+            dot.setBackgroundColor(0xFF4CAF50);
+            details.setVisibility(View.VISIBLE);
+            var ifaces = bridge.getDetector().getActiveInterfaces();
+            if (!ifaces.isEmpty()) {
+                var iface = ifaces.get(0);
+                ifaceView.setText(iface.name + " (" + iface.type.name() + ")");
+            }
+            var nat = svc.getNatEngine();
+            if (nat != null) {
+                connsView.setText(String.valueOf(nat.getActiveConnections()));
+                xferView.setText(formatBytes(nat.getBytesForwarded()));
+            }
+        } else {
+            stateView.setText(R.string.tether_state_error);
+            dot.setBackgroundColor(0xFFF44336);
+            details.setVisibility(View.GONE);
+        }
+    }
+
+    private static String formatBytes(long bytes) {
+        if (bytes < 1024) return bytes + " B";
+        if (bytes < 1024 * 1024) return String.format("%.1f KB", bytes / 1024.0);
+        if (bytes < 1024 * 1024 * 1024) return String.format("%.1f MB", bytes / (1024.0 * 1024));
+        return String.format("%.2f GB", bytes / (1024.0 * 1024 * 1024));
+    }
 }

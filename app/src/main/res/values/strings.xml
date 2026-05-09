@@ -153,4 +153,34 @@
     <string name="dialog_no_notification_alert_title">Notification Permission Not Granted</string>
     <string name="open_notification_settings">Goto notification settings</string>
     <string name="dont_show_again">Don\'t show again</string>
+    <!-- Tether UI -->
+    <string name="tether_title">Tether</string>
+    <string name="tether_state_idle">Idle</string>
+    <string name="tether_state_detecting">Detecting</string>
+    <string name="tether_state_active">Active</string>
+    <string name="tether_state_error">Error</string>
+    <string name="tether_interface_label">INTERFACE</string>
+    <string name="tether_connections_label">CONNECTIONS</string>
+    <string name="tether_transferred_label">TRANSFERRED</string>
+    <string name="tether_settings_title">Tether Settings</string>
+    <string name="tether_notification_active">Tethering: %1$d client(s), %2$s transferred</string>
+    <string name="tether_tile_label">XNet Tether</string>
+    <!-- Tether Preferences -->
+    <string name="tether_pref_category_general">General</string>
+    <string name="tether_pref_category_proxy">Proxy Servers</string>
+    <string name="tether_pref_category_dns">DNS</string>
+    <string name="tether_pref_enabled">Enable tether bridge</string>
+    <string name="tether_pref_enabled_summary">Route tethered traffic through VPN</string>
+    <string name="tether_pref_ttl">Fix TTL</string>
+    <string name="tether_pref_ttl_summary">Reset TTL to 64 to bypass carrier detection</string>
+    <string name="tether_pref_cellular">Prefer cellular upstream</string>
+    <string name="tether_pref_cellular_summary">Use cellular data when WiFi hotspot is active</string>
+    <string name="tether_pref_proxy">Enable proxy servers</string>
+    <string name="tether_pref_proxy_summary">Run SOCKS5 and HTTP proxy on tether interface</string>
+    <string name="tether_pref_socks_port">SOCKS5 port</string>
+    <string name="tether_pref_http_port">HTTP proxy port</string>
+    <string name="tether_pref_dns">Enable DNS proxy</string>
+    <string name="tether_pref_dns_summary">DoH resolver on tether interface</string>
+    <string name="tether_pref_dns_port">DNS port</string>
+    <string name="tether_pref_doh_provider">DoH provider</string>
 </resources>

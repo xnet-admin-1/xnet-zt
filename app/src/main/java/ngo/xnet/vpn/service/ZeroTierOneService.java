@@ -1153,6 +1153,7 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
                 if (state == TetherBridge.State.ACTIVE && !interfaces.isEmpty()) {
                     var iface = interfaces.get(0);
                     startProxies(iface.address);
+                    updateTetherNotification();
                 } else if (state == TetherBridge.State.IDLE || state == TetherBridge.State.DETECTING) {
                     stopProxies();
                 }
@@ -1208,4 +1209,36 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
     /** Get the NatEngine for use by TunTapAdapter packet processing. */
     public NatEngine getNatEngine() { return natEngine; }
     public TetherBridge getTetherBridge() { return tetherBridge; }
+
+    private void updateTetherNotification() {
+        if (notificationManager == null || natEngine == null) return;
+        int conns = natEngine.getActiveConnections();
+        long bytes = natEngine.getBytesForwarded();
+        String xfer = formatBytesShort(bytes);
+        String text = getString(R.string.tether_notification_active, conns, xfer);
+
+        int pendingIntentFlag = PendingIntent.FLAG_UPDATE_CURRENT;
+        if (Build.VERSION.SDK_INT >= 31) pendingIntentFlag |= PendingIntent.FLAG_IMMUTABLE;
+        var pendingIntent = PendingIntent.getActivity(this, 0,
+                new Intent(this, NetworkListActivity.class)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP),
+                pendingIntentFlag);
+
+        var notification = new NotificationCompat.Builder(this, Constants.CHANNEL_ID)
+                .setPriority(1)
+                .setOngoing(true)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(getString(R.string.notification_title_connected))
+                .setContentText(text)
+                .setColor(ContextCompat.getColor(getApplicationContext(), R.color.zerotier_orange))
+                .setContentIntent(pendingIntent).build();
+        notificationManager.notify(ZT_NOTIFICATION_TAG, notification);
+    }
+
+    private static String formatBytesShort(long bytes) {
+        if (bytes < 1024) return bytes + "B";
+        if (bytes < 1024 * 1024) return String.format("%.0fKB", bytes / 1024.0);
+        if (bytes < 1024L * 1024 * 1024) return String.format("%.1fMB", bytes / (1024.0 * 1024));
+        return String.format("%.2fGB", bytes / (1024.0 * 1024 * 1024));
+    }
 }

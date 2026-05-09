@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="doh_providers">
+        <item>Cloudflare (1.1.1.1)</item>
+        <item>Google (8.8.8.8)</item>
+        <item>Quad9 (9.9.9.9)</item>
+    </string-array>
+    <string-array name="doh_provider_values">
+        <item>https://1.1.1.1/dns-query</item>
+        <item>https://8.8.8.8/dns-query</item>
+        <item>https://9.9.9.9:5053/dns-query</item>
+    </string-array>
+</resources>

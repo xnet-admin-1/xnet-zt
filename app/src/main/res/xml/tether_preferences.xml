@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/tether_pref_category_general">
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="tether_enabled"
+            android:summary="@string/tether_pref_enabled_summary"
+            android:title="@string/tether_pref_enabled" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="ttl_fix_enabled"
+            android:summary="@string/tether_pref_ttl_summary"
+            android:title="@string/tether_pref_ttl" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="cellular_preferred"
+            android:summary="@string/tether_pref_cellular_summary"
+            android:title="@string/tether_pref_cellular" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/tether_pref_category_proxy">
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="proxy_enabled"
+            android:summary="@string/tether_pref_proxy_summary"
+            android:title="@string/tether_pref_proxy" />
+        <EditTextPreference
+            android:defaultValue="1080"
+            android:key="socks_port"
+            android:title="@string/tether_pref_socks_port"
+            android:inputType="number" />
+        <EditTextPreference
+            android:defaultValue="8080"
+            android:key="http_port"
+            android:title="@string/tether_pref_http_port"
+            android:inputType="number" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/tether_pref_category_dns">
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="dns_enabled"
+            android:summary="@string/tether_pref_dns_summary"
+            android:title="@string/tether_pref_dns" />
+        <EditTextPreference
+            android:defaultValue="53"
+            android:key="dns_port"
+            android:title="@string/tether_pref_dns_port"
+            android:inputType="number" />
+        <ListPreference
+            android:defaultValue="https://1.1.1.1/dns-query"
+            android:entries="@array/doh_providers"
+            android:entryValues="@array/doh_provider_values"
+            android:key="doh_url"
+            android:title="@string/tether_pref_doh_provider" />
+    </PreferenceCategory>
+</PreferenceScreen>

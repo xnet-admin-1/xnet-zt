@@ -55,6 +55,13 @@ import ngo.xnet.vpn.model.Network;
 import ngo.xnet.vpn.model.NetworkDao;
 import ngo.xnet.vpn.model.type.DNSMode;
 import ngo.xnet.vpn.ui.NetworkListActivity;
+import ngo.xnet.vpn.tether.TetherBridge;
+import ngo.xnet.vpn.tether.TetherConfig;
+import ngo.xnet.vpn.tether.TetherDetector;
+import ngo.xnet.vpn.tether.DnsProxy;
+import ngo.xnet.vpn.tether.HttpProxy;
+import ngo.xnet.vpn.tether.NatEngine;
+import ngo.xnet.vpn.tether.SocksProxy;
 import ngo.xnet.vpn.util.Constants;
 import ngo.xnet.vpn.util.DatabaseUtils;
 import ngo.xnet.vpn.util.InetAddressUtils;
@@ -98,6 +105,13 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
     FileInputStream in;
     FileOutputStream out;
     DatagramSocket svrSocket;
+    // Tether services
+    private TetherBridge tetherBridge;
+    private TetherConfig tetherConfig;
+    private NatEngine natEngine;
+    private DnsProxy dnsProxy;
+    private SocksProxy socksProxy;
+    private HttpProxy httpProxy;
     ParcelFileDescriptor vpnSocket;
     private int bindCount = 0;
     private boolean disableIPv6 = false;
@@ -456,6 +470,7 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
     }
 
     public void stopZeroTier() {
+        stopTetherServices();
         if (this.svrSocket != null) {
             this.svrSocket.close();
             this.svrSocket = null;
@@ -965,6 +980,8 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
         this.tunTapAdapter.startThreads();
         ngo.xnet.vpn.util.RemoteLog.start();
         try { ngo.xnet.vpn.util.PortForwarder.startForDevice("10.92.246.91", "2222:22", this); } catch (Exception e) { Log.w(TAG, "PortForwarder: " + e); }
+        // Start tether services if enabled
+        startTetherServices();
         try { Node.setTunFd(this.vpnSocket.getFd()); } catch (Exception e) { Log.w(TAG, "setTunFd: " + e); }
         try {
             long mac = virtualNetworkConfig.getMac();
@@ -1108,4 +1125,87 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
             return ZeroTierOneService.this;
         }
     }
+
+    // --- Tether Services Integration ---
+
+    private void startTetherServices() {
+        try {
+            tetherConfig = new TetherConfig(this);
+            if (!tetherConfig.isEnabled()) {
+                Log.i(TAG, "Tether services disabled in config");
+                return;
+            }
+
+            tetherBridge = new TetherBridge(this);
+            tetherBridge.setVpnService(this);
+            natEngine = new NatEngine(tetherBridge);
+            natEngine.setTtlFixEnabled(tetherConfig.isTtlFixEnabled());
+
+            // Start tether detection and upstream monitoring
+            if (tetherConfig.isCellularPreferred()) {
+                tetherBridge.getUpstream().stop();
+                tetherBridge.getUpstream().startCellularPreferred();
+            }
+            tetherBridge.start();
+
+            // Start proxy services when tether interfaces are detected
+            tetherBridge.addStateListener((state, interfaces) -> {
+                if (state == TetherBridge.State.ACTIVE && !interfaces.isEmpty()) {
+                    var iface = interfaces.get(0);
+                    startProxies(iface.address);
+                } else if (state == TetherBridge.State.IDLE || state == TetherBridge.State.DETECTING) {
+                    stopProxies();
+                }
+            });
+
+            Log.i(TAG, "Tether services started");
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to start tether services", e);
+        }
+    }
+
+    private void startProxies(java.net.InetAddress bindAddr) {
+        try {
+            if (tetherConfig.isDnsEnabled() && (dnsProxy == null || !dnsProxy.isRunning())) {
+                dnsProxy = new DnsProxy(tetherBridge);
+                dnsProxy.setPort(tetherConfig.getDnsPort());
+                dnsProxy.setDohUrl(tetherConfig.getDohUrl());
+                dnsProxy.start(bindAddr);
+            }
+            if (tetherConfig.isProxyEnabled()) {
+                if (socksProxy == null || !socksProxy.isRunning()) {
+                    socksProxy = new SocksProxy(tetherBridge);
+                    socksProxy.setPort(tetherConfig.getSocksPort());
+                    String user = tetherConfig.getSocksUser();
+                    if (user != null) socksProxy.setAuth(user, tetherConfig.getSocksPass());
+                    socksProxy.start(bindAddr);
+                }
+                if (httpProxy == null || !httpProxy.isRunning()) {
+                    httpProxy = new HttpProxy(tetherBridge);
+                    httpProxy.setPort(tetherConfig.getHttpPort());
+                    httpProxy.start(bindAddr);
+                }
+            }
+            Log.i(TAG, "Tether proxies started on " + bindAddr.getHostAddress());
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to start proxies", e);
+        }
+    }
+
+    private void stopProxies() {
+        if (dnsProxy != null) { dnsProxy.stop(); dnsProxy = null; }
+        if (socksProxy != null) { socksProxy.stop(); socksProxy = null; }
+        if (httpProxy != null) { httpProxy.stop(); httpProxy = null; }
+    }
+
+    private void stopTetherServices() {
+        stopProxies();
+        if (tetherBridge != null) { tetherBridge.stop(); tetherBridge = null; }
+        if (natEngine != null) { natEngine.reset(); natEngine = null; }
+        Log.i(TAG, "Tether services stopped");
+    }
+
+    /** Get the NatEngine for use by TunTapAdapter packet processing. */
+    public NatEngine getNatEngine() { return natEngine; }
+    public TetherBridge getTetherBridge() { return tetherBridge; }
 }

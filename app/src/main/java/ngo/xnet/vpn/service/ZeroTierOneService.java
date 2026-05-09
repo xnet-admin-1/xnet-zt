@@ -1138,6 +1138,30 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
 
             tetherBridge = new TetherBridge(this);
             tetherBridge.setVpnService(this);
+
+            // Determine socket mode from route-via-ZT setting
+            boolean routeViaZt = true;
+            try {
+                DatabaseUtils.readLock.lock();
+                try {
+                    var daoSession = ((XnetApplication) getApplication()).getDaoSession();
+                    var networks = daoSession.getNetworkDao().queryBuilder()
+                            .where(ngo.xnet.vpn.model.NetworkDao.Properties.LastActivated.eq(true)).list();
+                    if (networks != null && !networks.isEmpty()) {
+                        var nc = networks.get(0).getNetworkConfig();
+                        if (nc != null) routeViaZt = nc.getRouteViaZeroTier();
+                    }
+                } finally {
+                    DatabaseUtils.readLock.unlock();
+                }
+            } catch (Exception e) { Log.w(TAG, "Error reading routeViaZT", e); }
+
+            // TUNNEL = route through VPN (default when route-via-ZT enabled)
+            // BYPASS = protect+bind to upstream (when route-via-ZT disabled)
+            tetherBridge.setSocketMode(routeViaZt
+                    ? TetherBridge.SocketMode.TUNNEL
+                    : TetherBridge.SocketMode.BYPASS);
+
             natEngine = new NatEngine(tetherBridge);
             natEngine.setTtlFixEnabled(tetherConfig.isTtlFixEnabled());
 

@@ -29,11 +29,20 @@ public class TetherBridge implements TetherDetector.Listener, UpstreamSelector.L
 
     public enum State { IDLE, DETECTING, ACTIVE, ERROR }
 
+    /** Socket routing mode for proxy upstream connections. */
+    public enum SocketMode {
+        /** Route through VPN tunnel (no protect, no bind) — default. */
+        TUNNEL,
+        /** Bypass VPN, bind to upstream network (protect + bind). */
+        BYPASS
+    }
+
     private final Context context;
     private final TetherDetector detector;
     private final UpstreamSelector upstream;
     private volatile VpnService vpnService;
     private volatile State state = State.IDLE;
+    private volatile SocketMode socketMode = SocketMode.TUNNEL;
     private final List<StateListener> stateListeners = new CopyOnWriteArrayList<>();
 
     public interface StateListener {
@@ -51,6 +60,13 @@ public class TetherBridge implements TetherDetector.Listener, UpstreamSelector.L
     public void setVpnService(VpnService vpnService) {
         this.vpnService = vpnService;
     }
+
+    public void setSocketMode(SocketMode mode) {
+        this.socketMode = mode;
+        RemoteLog.log(TAG, "SocketMode: " + mode);
+    }
+
+    public SocketMode getSocketMode() { return socketMode; }
 
     public void start() {
         if (state != State.IDLE) return;
@@ -111,17 +127,21 @@ public class TetherBridge implements TetherDetector.Listener, UpstreamSelector.L
     // --- Socket creation for proxy/forwarding use ---
 
     /**
-     * Create a TCP socket bound to the upstream network and protected from VPN loop.
+     * Create a TCP socket for proxy upstream.
+     * TUNNEL mode: plain socket, traffic goes through VPN/ZT tunnel.
+     * BYPASS mode: protect + bind to upstream network, bypasses VPN.
      */
     public Socket createUpstreamSocket() throws Exception {
         Socket socket = new Socket();
-        protectSocket(socket);
-        upstream.bindSocket(socket);
+        if (socketMode == SocketMode.BYPASS) {
+            protectSocket(socket);
+            upstream.bindSocket(socket);
+        }
         return socket;
     }
 
     /**
-     * Create and connect a TCP socket to the given destination via upstream.
+     * Create and connect a TCP socket to the given destination.
      */
     public Socket connectUpstream(InetAddress host, int port) throws Exception {
         Socket socket = createUpstreamSocket();
@@ -130,12 +150,16 @@ public class TetherBridge implements TetherDetector.Listener, UpstreamSelector.L
     }
 
     /**
-     * Create a UDP socket bound to the upstream network and protected from VPN loop.
+     * Create a UDP socket for proxy upstream.
+     * TUNNEL mode: plain socket, traffic goes through VPN/ZT tunnel.
+     * BYPASS mode: protect + bind to upstream network, bypasses VPN.
      */
     public DatagramSocket createUpstreamDatagramSocket() throws Exception {
         DatagramSocket socket = new DatagramSocket(null);
-        protectSocket(socket);
-        upstream.bindSocket(socket);
+        if (socketMode == SocketMode.BYPASS) {
+            protectSocket(socket);
+            upstream.bindSocket(socket);
+        }
         return socket;
     }
 

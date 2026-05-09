@@ -20,6 +20,11 @@ import ngo.xnet.vpn.util.RemoteLog;
  */
 public class TetherProxyService extends Service {
     private static final String TAG = "TetherProxySvc";
+
+    private static void rlog(String msg) {
+        Log.i(TAG, msg);
+        RemoteLog.log(TAG, msg);
+    }
     public static final String EXTRA_BIND_ADDR = "bind_addr";
     public static final String EXTRA_SOCKS_PORT = "socks_port";
     public static final String EXTRA_HTTP_PORT = "http_port";
@@ -35,6 +40,7 @@ public class TetherProxyService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent == null) return START_NOT_STICKY;
+        RemoteLog.start(19982); // Port 19982 for :tether process (19981 is main process)
 
         String bindAddrStr = intent.getStringExtra(EXTRA_BIND_ADDR);
         int socksPort = intent.getIntExtra(EXTRA_SOCKS_PORT, 1080);
@@ -69,12 +75,27 @@ public class TetherProxyService extends Service {
             if (dohUrl != null) dnsProxy.setDohUrl(dohUrl);
             dnsProxy.start(bindAddr);
 
-            RemoteLog.log(TAG, "Proxies started on " + bindAddrStr
+            rlog("Proxies started on " + bindAddrStr
                     + " SOCKS:" + socksPort + " HTTP:" + httpPort + " DNS:" + dnsPort
                     + " mode=" + mode);
+
+            // Test: check external IP to verify routing
+            new Thread(() -> {
+                try {
+                    java.net.URL url = new java.net.URL("https://api.ipify.org");
+                    java.net.HttpURLConnection c = (java.net.HttpURLConnection) url.openConnection();
+                    c.setConnectTimeout(5000);
+                    c.setReadTimeout(5000);
+                    String ip = new String(c.getInputStream().readAllBytes()).trim();
+                    c.disconnect();
+                    rlog("External IP from :tether process: " + ip);
+                } catch (Exception e) {
+                    rlog("IP check failed: " + e.getMessage());
+                }
+            }).start();
         } catch (Exception e) {
             Log.e(TAG, "Failed to start", e);
-            RemoteLog.log(TAG, "FAILED: " + e.getMessage());
+            rlog("FAILED: " + e.getMessage());
         }
 
         return START_STICKY;
@@ -86,7 +107,7 @@ public class TetherProxyService extends Service {
         if (httpProxy != null) httpProxy.stop();
         if (dnsProxy != null) dnsProxy.stop();
         if (bridge != null) bridge.stop();
-        RemoteLog.log(TAG, "Stopped");
+        rlog("Stopped");
         super.onDestroy();
     }
 

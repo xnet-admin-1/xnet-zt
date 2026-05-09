@@ -34,15 +34,18 @@ public class RemoteLog {
 
     public static synchronized String getKey() { return apiKey; }
 
-    public static void start() {
+    public static void start() { start(PORT); }
+
+    public static void start(int port) {
         if (server != null) return;
         apiKey = UUID.randomUUID().toString().substring(0, 8);
-        Log.w(TAG, "Remote log key: " + apiKey + " port: " + PORT);
+        Log.w(TAG, "Remote log key: " + apiKey + " port: " + port);
         log(TAG, "Remote log started, key=" + apiKey);
 
+        int finalPort = port;
         new Thread(() -> {
             try {
-                server = new ServerSocket(PORT);
+                server = new ServerSocket(finalPort);
                 while (!Thread.interrupted()) {
                     Socket s = server.accept();
                     try {

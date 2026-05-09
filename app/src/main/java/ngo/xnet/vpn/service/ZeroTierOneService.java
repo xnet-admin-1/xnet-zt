@@ -1204,40 +1204,26 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
 
     private void startProxies(java.net.InetAddress bindAddr) {
         try {
-            if (tetherConfig.isDnsEnabled() && (dnsProxy == null || !dnsProxy.isRunning())) {
-                dnsProxy = new DnsProxy(tetherBridge);
-                int dnsPort = tetherConfig.getDnsPort();
-                if (dnsPort < 1024) dnsPort = 5353; // unprivileged fallback
-                dnsProxy.setPort(dnsPort);
-                dnsProxy.setDohUrl(tetherConfig.getDohUrl());
-                dnsProxy.start(bindAddr);
-            }
-            if (tetherConfig.isProxyEnabled()) {
-                if (socksProxy == null || !socksProxy.isRunning()) {
-                    socksProxy = new SocksProxy(tetherBridge);
-                    socksProxy.setPort(tetherConfig.getSocksPort());
-                    String user = tetherConfig.getSocksUser();
-                    if (user != null) socksProxy.setAuth(user, tetherConfig.getSocksPass());
-                    socksProxy.start(bindAddr);
-                }
-                if (httpProxy == null || !httpProxy.isRunning()) {
-                    httpProxy = new HttpProxy(tetherBridge);
-                    httpProxy.setPort(tetherConfig.getHttpPort());
-                    httpProxy.start(bindAddr);
-                }
-            }
-            Log.i(TAG, "Tether proxies started on " + bindAddr.getHostAddress());
-            ngo.xnet.vpn.util.RemoteLog.log(TAG, "Proxies started on " + bindAddr.getHostAddress() + " SOCKS:" + tetherConfig.getSocksPort() + " HTTP:" + tetherConfig.getHttpPort() + " DNS:" + (tetherConfig.getDnsPort() < 1024 ? 5353 : tetherConfig.getDnsPort()));
+            Intent proxyIntent = new Intent(this, TetherProxyService.class);
+            proxyIntent.putExtra(TetherProxyService.EXTRA_BIND_ADDR, bindAddr.getHostAddress());
+            proxyIntent.putExtra(TetherProxyService.EXTRA_SOCKS_PORT, tetherConfig.getSocksPort());
+            proxyIntent.putExtra(TetherProxyService.EXTRA_HTTP_PORT, tetherConfig.getHttpPort());
+            int dnsPort = tetherConfig.getDnsPort();
+            proxyIntent.putExtra(TetherProxyService.EXTRA_DNS_PORT, dnsPort < 1024 ? 5353 : dnsPort);
+            proxyIntent.putExtra(TetherProxyService.EXTRA_DOH_URL, tetherConfig.getDohUrl());
+            proxyIntent.putExtra(TetherProxyService.EXTRA_SOCKET_MODE,
+                    tetherBridge.getSocketMode().name());
+            startService(proxyIntent);
+            ngo.xnet.vpn.util.RemoteLog.log(TAG, "TetherProxyService launched for " + bindAddr.getHostAddress() + " mode=" + tetherBridge.getSocketMode());
         } catch (Exception e) {
-            Log.e(TAG, "Failed to start proxies", e);
-            ngo.xnet.vpn.util.RemoteLog.log(TAG, "PROXY START FAILED: " + e.getMessage());
+            Log.e(TAG, "Failed to start proxy service", e);
+            ngo.xnet.vpn.util.RemoteLog.log(TAG, "PROXY SERVICE LAUNCH FAILED: " + e.getMessage());
         }
     }
 
     private void stopProxies() {
-        if (dnsProxy != null) { dnsProxy.stop(); dnsProxy = null; }
-        if (socksProxy != null) { socksProxy.stop(); socksProxy = null; }
-        if (httpProxy != null) { httpProxy.stop(); httpProxy = null; }
+        try { stopService(new Intent(this, TetherProxyService.class)); }
+        catch (Exception ignored) {}
     }
 
     private void stopTetherServices() {

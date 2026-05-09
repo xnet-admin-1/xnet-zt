@@ -70,6 +70,12 @@
             android:label="@string/tether_settings_title" />
 
         <service
+            android:name=".service.TetherProxyService"
+            android:enabled="true"
+            android:exported="false"
+            android:process=":tether" />
+
+        <service
             android:name=".service.TetherTileService"
             android:exported="true"
             android:icon="@mipmap/ic_launcher"

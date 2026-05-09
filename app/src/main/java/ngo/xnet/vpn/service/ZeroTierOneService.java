@@ -1215,6 +1215,21 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
                     tetherBridge.getSocketMode().name());
             startService(proxyIntent);
             ngo.xnet.vpn.util.RemoteLog.log(TAG, "TetherProxyService launched for " + bindAddr.getHostAddress() + " mode=" + tetherBridge.getSocketMode());
+
+            // Check external IP from main process (VPN-excluded) to compare
+            new Thread(() -> {
+                try {
+                    java.net.URL url = new java.net.URL("https://api.ipify.org");
+                    java.net.HttpURLConnection c = (java.net.HttpURLConnection) url.openConnection();
+                    c.setConnectTimeout(5000);
+                    c.setReadTimeout(5000);
+                    String ip = new String(c.getInputStream().readAllBytes()).trim();
+                    c.disconnect();
+                    ngo.xnet.vpn.util.RemoteLog.log(TAG, "External IP (main/VPN process): " + ip);
+                } catch (Exception e) {
+                    ngo.xnet.vpn.util.RemoteLog.log(TAG, "IP check failed: " + e.getMessage());
+                }
+            }).start();
         } catch (Exception e) {
             Log.e(TAG, "Failed to start proxy service", e);
             ngo.xnet.vpn.util.RemoteLog.log(TAG, "PROXY SERVICE LAUNCH FAILED: " + e.getMessage());

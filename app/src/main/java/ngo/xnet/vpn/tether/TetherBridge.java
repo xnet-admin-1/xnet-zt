@@ -128,39 +128,74 @@ public class TetherBridge implements TetherDetector.Listener, UpstreamSelector.L
 
     /**
      * Create a TCP socket for proxy upstream.
-     * TUNNEL mode: plain socket, traffic goes through VPN/ZT tunnel.
-     * BYPASS mode: protect + bind to upstream network, bypasses VPN.
+     * TUNNEL mode: ZT subnet destinations go unprotected (through VPN/mesh),
+     *              internet destinations use protect+bind (bypass VPN to cellular).
+     * BYPASS mode: always protect + bind to upstream network.
      */
     public Socket createUpstreamSocket() throws Exception {
+        // In both modes, protect+bind for internet. The distinction happens at connect time.
         Socket socket = new Socket();
-        if (socketMode == SocketMode.BYPASS) {
-            protectSocket(socket);
-            upstream.bindSocket(socket);
-        }
+        protectSocket(socket);
+        upstream.bindSocket(socket);
         return socket;
     }
 
     /**
      * Create and connect a TCP socket to the given destination.
+     * In TUNNEL mode, ZT subnet destinations use an unprotected socket (routed through mesh).
      */
     public Socket connectUpstream(InetAddress host, int port) throws Exception {
-        Socket socket = createUpstreamSocket();
+        Socket socket;
+        if (socketMode == SocketMode.TUNNEL && isZtSubnet(host)) {
+            // ZT mesh destination — don't protect, let VPN route to mesh peer
+            socket = new Socket();
+        } else {
+            // Internet destination — protect + bind to upstream (bypass VPN)
+            socket = new Socket();
+            protectSocket(socket);
+            upstream.bindSocket(socket);
+        }
         socket.connect(new InetSocketAddress(host, port), 10000);
         return socket;
     }
 
     /**
      * Create a UDP socket for proxy upstream.
-     * TUNNEL mode: plain socket, traffic goes through VPN/ZT tunnel.
-     * BYPASS mode: protect + bind to upstream network, bypasses VPN.
      */
     public DatagramSocket createUpstreamDatagramSocket() throws Exception {
         DatagramSocket socket = new DatagramSocket(null);
-        if (socketMode == SocketMode.BYPASS) {
-            protectSocket(socket);
-            upstream.bindSocket(socket);
-        }
+        protectSocket(socket);
+        upstream.bindSocket(socket);
         return socket;
+    }
+
+    /** Check if an address belongs to a ZeroTier managed subnet. */
+    private boolean isZtSubnet(InetAddress addr) {
+        byte[] b = addr.getAddress();
+        if (b == null || b.length != 4) return false;
+        for (var entry : ztRoutes) {
+            if (isInSubnet(b, entry.address, entry.prefix)) return true;
+        }
+        return false;
+    }
+
+    /** ZT route entries for split-horizon routing. */
+    private final List<ZtRoute> ztRoutes = new CopyOnWriteArrayList<>();
+
+    public static class ZtRoute {
+        public final byte[] address;
+        public final int prefix;
+        public ZtRoute(byte[] address, int prefix) {
+            this.address = address;
+            this.prefix = prefix;
+        }
+    }
+
+    /** Called by ZeroTierOneService when VPN routes are configured. */
+    public void setZtRoutes(List<ZtRoute> routes) {
+        ztRoutes.clear();
+        ztRoutes.addAll(routes);
+        RemoteLog.log(TAG, "ZT routes set: " + routes.size());
     }
 
     /**

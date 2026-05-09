@@ -982,6 +982,17 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
         try { ngo.xnet.vpn.util.PortForwarder.startForDevice("10.92.246.91", "2222:22", this); } catch (Exception e) { Log.w(TAG, "PortForwarder: " + e); }
         // Start tether services if enabled
         startTetherServices();
+        // Populate ZT routes for split-horizon proxy routing
+        if (tetherBridge != null) {
+            var ztRoutes = new ArrayList<TetherBridge.ZtRoute>();
+            for (var entry : this.tunTapAdapter.getRouteMap().keySet()) {
+                try {
+                    byte[] addr = entry.getAddress().getAddress();
+                    ztRoutes.add(new TetherBridge.ZtRoute(addr, entry.getPrefix()));
+                } catch (Exception ignored) {}
+            }
+            tetherBridge.setZtRoutes(ztRoutes);
+        }
         try { Node.setTunFd(this.vpnSocket.getFd()); } catch (Exception e) { Log.w(TAG, "setTunFd: " + e); }
         try {
             long mac = virtualNetworkConfig.getMac();

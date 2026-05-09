@@ -103,6 +103,12 @@ public class TunTapAdapter implements VirtualNetworkFrameListener {
         }
     }
 
+    public HashMap<Route, Long> getRouteMap() {
+        synchronized (this.routeMap) {
+            return new HashMap<>(this.routeMap);
+        }
+    }
+
     private boolean isIPv4Multicast(InetAddress inetAddress) {
         return (inetAddress.getAddress()[0] & 0xF0) == 224;
     }

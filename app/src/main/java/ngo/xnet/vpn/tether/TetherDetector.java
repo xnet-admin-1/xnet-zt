@@ -17,6 +17,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import ngo.xnet.vpn.util.RemoteLog;
+
 /**
  * Detects active tethering interfaces (USB/WiFi/BT/Ethernet) by enumerating
  * NetworkInterfaces for known tether interface name prefixes and private subnets.
@@ -103,6 +105,10 @@ public class TetherDetector {
                 if (!detected.equals(new ArrayList<>(activeInterfaces))) {
                     activeInterfaces.clear();
                     activeInterfaces.addAll(detected);
+                    RemoteLog.log(TAG, "Interfaces changed: " + detected.size());
+                    for (TetherInterface ti : detected) {
+                        RemoteLog.log(TAG, "  " + ti.name + " (" + ti.type + ") " + ti.address.getHostAddress() + "/" + ti.prefixLength);
+                    }
                     for (Listener l : listeners) {
                         try { l.onTetherInterfacesChanged(detected); }
                         catch (Exception e) { Log.w(TAG, "Listener error", e); }

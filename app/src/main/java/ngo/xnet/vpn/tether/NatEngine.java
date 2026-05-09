@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
+import ngo.xnet.vpn.util.RemoteLog;
+
 /**
  * Userspace NAT engine for tethered traffic flowing through the VPN tunnel.
  * 
@@ -84,6 +86,10 @@ public class NatEngine {
         trackConnection(packet, length, true);
         packetsForwarded.incrementAndGet();
         bytesForwarded.addAndGet(length);
+        long pf = packetsForwarded.get();
+        if ((pf & 255) == 1) {
+            RemoteLog.log(TAG, "tether pkts=" + pf + " bytes=" + bytesForwarded.get() + " conns=" + connectionTable.size());
+        }
         return true;
     }
 

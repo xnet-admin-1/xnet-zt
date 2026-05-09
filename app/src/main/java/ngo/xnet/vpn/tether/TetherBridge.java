@@ -15,6 +15,8 @@ import java.nio.channels.SocketChannel;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import ngo.xnet.vpn.util.RemoteLog;
+
 /**
  * Orchestrates tether services: detects tether interfaces, selects upstream network,
  * and provides socket creation/binding for forwarding tethered traffic to the internet
@@ -172,6 +174,7 @@ public class TetherBridge implements TetherDetector.Listener, UpstreamSelector.L
     private void setState(State newState) {
         if (state == newState) return;
         state = newState;
+        RemoteLog.log(TAG, "State: " + newState);
         var interfaces = detector.getActiveInterfaces();
         for (StateListener l : stateListeners) {
             try { l.onStateChanged(newState, interfaces); }

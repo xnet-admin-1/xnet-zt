@@ -181,6 +181,12 @@ public class TunTapAdapter implements VirtualNetworkFrameListener {
     private long txTotalNs;
 
     private void handleIPv4Packet(byte[] buffer, int length) {
+        // Tether traffic tracking — identify packets from/to tether subnets
+        var natEngine = this.ztService.getNatEngine();
+        if (natEngine != null) {
+            natEngine.processOutbound(buffer, length);
+        }
+
         // Fast path for common unicast IPv4 with known MAC
         var config = this.cachedConfig;
         if (config == null || this.cachedConfigNetworkId != this.networkId) {

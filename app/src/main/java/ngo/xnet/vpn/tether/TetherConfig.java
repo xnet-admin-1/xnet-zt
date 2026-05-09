@@ -38,14 +38,19 @@ public class TetherConfig {
     public boolean isDnsEnabled() { return prefs.getBoolean(KEY_DNS_ENABLED, true); }
     public void setDnsEnabled(boolean v) { prefs.edit().putBoolean(KEY_DNS_ENABLED, v).apply(); }
 
-    public int getSocksPort() { return prefs.getInt(KEY_SOCKS_PORT, 1080); }
-    public void setSocksPort(int v) { prefs.edit().putInt(KEY_SOCKS_PORT, v).apply(); }
+    public int getSocksPort() { return getIntPref(KEY_SOCKS_PORT, 1080); }
+    public void setSocksPort(int v) { prefs.edit().putString(KEY_SOCKS_PORT, String.valueOf(v)).apply(); }
 
-    public int getHttpPort() { return prefs.getInt(KEY_HTTP_PORT, 8080); }
-    public void setHttpPort(int v) { prefs.edit().putInt(KEY_HTTP_PORT, v).apply(); }
+    public int getHttpPort() { return getIntPref(KEY_HTTP_PORT, 8080); }
+    public void setHttpPort(int v) { prefs.edit().putString(KEY_HTTP_PORT, String.valueOf(v)).apply(); }
 
-    public int getDnsPort() { return prefs.getInt(KEY_DNS_PORT, 53); }
-    public void setDnsPort(int v) { prefs.edit().putInt(KEY_DNS_PORT, v).apply(); }
+    public int getDnsPort() { return getIntPref(KEY_DNS_PORT, 53); }
+    public void setDnsPort(int v) { prefs.edit().putString(KEY_DNS_PORT, String.valueOf(v)).apply(); }
+
+    private int getIntPref(String key, int def) {
+        try { return Integer.parseInt(prefs.getString(key, String.valueOf(def))); }
+        catch (Exception e) { return def; }
+    }
 
     public String getDohUrl() { return prefs.getString(KEY_DOH_URL, "https://1.1.1.1/dns-query"); }
     public void setDohUrl(String v) { prefs.edit().putString(KEY_DOH_URL, v).apply(); }

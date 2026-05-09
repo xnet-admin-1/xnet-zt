@@ -128,32 +128,38 @@ public class TetherBridge implements TetherDetector.Listener, UpstreamSelector.L
 
     /**
      * Create a TCP socket for proxy upstream.
-     * TUNNEL mode: ZT subnet destinations go unprotected (through VPN/mesh),
-     *              internet destinations use protect+bind (bypass VPN to cellular).
-     * BYPASS mode: always protect + bind to upstream network.
+     * TUNNEL mode (route-via-ZT=true): ALL traffic goes through VPN tunnel unprotected.
+     * BYPASS mode (route-via-ZT=false): split horizon — ZT subnets through tunnel,
+     *              internet via protect+bind to upstream.
      */
     public Socket createUpstreamSocket() throws Exception {
-        // In both modes, protect+bind for internet. The distinction happens at connect time.
         Socket socket = new Socket();
-        protectSocket(socket);
-        upstream.bindSocket(socket);
+        if (socketMode == SocketMode.BYPASS) {
+            protectSocket(socket);
+            upstream.bindSocket(socket);
+        }
         return socket;
     }
 
     /**
      * Create and connect a TCP socket to the given destination.
-     * In TUNNEL mode, ZT subnet destinations use an unprotected socket (routed through mesh).
+     * TUNNEL: all destinations go through VPN (unprotected).
+     * BYPASS: ZT subnets unprotected, everything else protect+bind.
      */
     public Socket connectUpstream(InetAddress host, int port) throws Exception {
         Socket socket;
-        if (socketMode == SocketMode.TUNNEL && isZtSubnet(host)) {
-            // ZT mesh destination — don't protect, let VPN route to mesh peer
+        if (socketMode == SocketMode.TUNNEL) {
+            // All traffic through VPN tunnel
             socket = new Socket();
         } else {
-            // Internet destination — protect + bind to upstream (bypass VPN)
-            socket = new Socket();
-            protectSocket(socket);
-            upstream.bindSocket(socket);
+            // Split horizon: ZT subnets through tunnel, internet via bypass
+            if (isZtSubnet(host)) {
+                socket = new Socket();
+            } else {
+                socket = new Socket();
+                protectSocket(socket);
+                upstream.bindSocket(socket);
+            }
         }
         socket.connect(new InetSocketAddress(host, port), 10000);
         return socket;
@@ -161,11 +167,14 @@ public class TetherBridge implements TetherDetector.Listener, UpstreamSelector.L
 
     /**
      * Create a UDP socket for proxy upstream.
+     * TUNNEL: unprotected (through VPN). BYPASS: protect+bind.
      */
     public DatagramSocket createUpstreamDatagramSocket() throws Exception {
         DatagramSocket socket = new DatagramSocket(null);
-        protectSocket(socket);
-        upstream.bindSocket(socket);
+        if (socketMode == SocketMode.BYPASS) {
+            protectSocket(socket);
+            upstream.bindSocket(socket);
+        }
         return socket;
     }
 

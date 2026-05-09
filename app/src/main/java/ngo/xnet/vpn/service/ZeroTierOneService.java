@@ -1173,6 +1173,32 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
                     ? TetherBridge.SocketMode.TUNNEL
                     : TetherBridge.SocketMode.BYPASS);
 
+            // In TUNNEL mode, chain through exit node's SOCKS5 proxy
+            if (routeViaZt) {
+                try {
+                    // Find the ZT network gateway (exit node) from routes
+                    var routes = tunTapAdapter != null ? tunTapAdapter.getRouteMap() : null;
+                    java.net.InetAddress gateway = null;
+                    if (routes != null) {
+                        for (var route : routes.keySet()) {
+                            if (route.getGateway() != null) {
+                                gateway = route.getGateway();
+                                break;
+                            }
+                        }
+                    }
+                    if (gateway != null) {
+                        tetherBridge.setUpstreamSocks(gateway, 1080);
+                    } else {
+                        // Fallback: hardcoded exit node
+                        tetherBridge.setUpstreamSocks(
+                                java.net.InetAddress.getByName("10.121.21.117"), 1080);
+                    }
+                } catch (Exception e) {
+                    Log.w(TAG, "Failed to set upstream SOCKS", e);
+                }
+            }
+
             natEngine = new NatEngine(tetherBridge);
             natEngine.setTtlFixEnabled(tetherConfig.isTtlFixEnabled());
 
@@ -1204,51 +1230,40 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
 
     private void startProxies(java.net.InetAddress bindAddr) {
         try {
-            Intent proxyIntent = new Intent(this, TetherProxyService.class);
-            proxyIntent.putExtra(TetherProxyService.EXTRA_BIND_ADDR, bindAddr.getHostAddress());
-            proxyIntent.putExtra(TetherProxyService.EXTRA_SOCKS_PORT, tetherConfig.getSocksPort());
-            proxyIntent.putExtra(TetherProxyService.EXTRA_HTTP_PORT, tetherConfig.getHttpPort());
-            int dnsPort = tetherConfig.getDnsPort();
-            proxyIntent.putExtra(TetherProxyService.EXTRA_DNS_PORT, dnsPort < 1024 ? 5353 : dnsPort);
-            proxyIntent.putExtra(TetherProxyService.EXTRA_DOH_URL, tetherConfig.getDohUrl());
-            proxyIntent.putExtra(TetherProxyService.EXTRA_SOCKET_MODE,
-                    tetherBridge.getSocketMode().name());
-            startService(proxyIntent);
-            ngo.xnet.vpn.util.RemoteLog.log(TAG, "TetherProxyService launched for " + bindAddr.getHostAddress() + " mode=" + tetherBridge.getSocketMode());
-
-            // Check external IP from main process (VPN-excluded) to compare
-            new Thread(() -> {
-                try {
-                    // Test 1: direct internet (should show cellular IP since VPN process excluded)
-                    java.net.URL url = new java.net.URL("https://api.ipify.org");
-                    java.net.HttpURLConnection c = (java.net.HttpURLConnection) url.openConnection();
-                    c.setConnectTimeout(5000);
-                    c.setReadTimeout(5000);
-                    String ip = new String(c.getInputStream().readAllBytes()).trim();
-                    c.disconnect();
-                    ngo.xnet.vpn.util.RemoteLog.log(TAG, "Direct IP (VPN process): " + ip);
-                } catch (Exception e) {
-                    ngo.xnet.vpn.util.RemoteLog.log(TAG, "Direct IP check failed: " + e.getMessage());
+            if (tetherConfig.isDnsEnabled() && (dnsProxy == null || !dnsProxy.isRunning())) {
+                dnsProxy = new DnsProxy(tetherBridge);
+                int dnsPort = tetherConfig.getDnsPort();
+                if (dnsPort < 1024) dnsPort = 5353;
+                dnsProxy.setPort(dnsPort);
+                dnsProxy.setDohUrl(tetherConfig.getDohUrl());
+                dnsProxy.start(bindAddr);
+            }
+            if (tetherConfig.isProxyEnabled()) {
+                if (socksProxy == null || !socksProxy.isRunning()) {
+                    socksProxy = new SocksProxy(tetherBridge);
+                    socksProxy.setPort(tetherConfig.getSocksPort());
+                    socksProxy.start(bindAddr);
                 }
-                try {
-                    // Test 2: can we reach exit node SOCKS at 10.121.21.117:1080?
-                    java.net.Socket s = new java.net.Socket();
-                    s.connect(new java.net.InetSocketAddress("10.121.21.117", 1080), 5000);
-                    s.close();
-                    ngo.xnet.vpn.util.RemoteLog.log(TAG, "Exit node SOCKS reachable from VPN process!");
-                } catch (Exception e) {
-                    ngo.xnet.vpn.util.RemoteLog.log(TAG, "Exit node SOCKS unreachable: " + e.getMessage());
+                if (httpProxy == null || !httpProxy.isRunning()) {
+                    httpProxy = new HttpProxy(tetherBridge);
+                    httpProxy.setPort(tetherConfig.getHttpPort());
+                    httpProxy.start(bindAddr);
                 }
-            }).start();
+            }
+            ngo.xnet.vpn.util.RemoteLog.log(TAG, "Proxies started on " + bindAddr.getHostAddress()
+                    + " SOCKS:" + tetherConfig.getSocksPort() + " HTTP:" + tetherConfig.getHttpPort()
+                    + " DNS:" + (tetherConfig.getDnsPort() < 1024 ? 5353 : tetherConfig.getDnsPort())
+                    + " mode=" + tetherBridge.getSocketMode());
         } catch (Exception e) {
-            Log.e(TAG, "Failed to start proxy service", e);
-            ngo.xnet.vpn.util.RemoteLog.log(TAG, "PROXY SERVICE LAUNCH FAILED: " + e.getMessage());
+            Log.e(TAG, "Failed to start proxies", e);
+            ngo.xnet.vpn.util.RemoteLog.log(TAG, "PROXY START FAILED: " + e.getMessage());
         }
     }
 
     private void stopProxies() {
-        try { stopService(new Intent(this, TetherProxyService.class)); }
-        catch (Exception ignored) {}
+        if (dnsProxy != null) { dnsProxy.stop(); dnsProxy = null; }
+        if (socksProxy != null) { socksProxy.stop(); socksProxy = null; }
+        if (httpProxy != null) { httpProxy.stop(); httpProxy = null; }
     }
 
     private void stopTetherServices() {

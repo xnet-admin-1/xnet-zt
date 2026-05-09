@@ -9,6 +9,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.SocketChannel;
@@ -128,6 +129,18 @@ public class TetherBridge implements TetherDetector.Listener, UpstreamSelector.L
 
     /**
      * Create a TCP socket for proxy upstream.
+    /** Upstream SOCKS5 proxy for TUNNEL mode (exit node). */
+    private InetAddress upstreamSocksAddr;
+    private int upstreamSocksPort;
+
+    /** Set the upstream SOCKS5 proxy (ZT exit node) for TUNNEL mode. */
+    public void setUpstreamSocks(InetAddress addr, int port) {
+        this.upstreamSocksAddr = addr;
+        this.upstreamSocksPort = port;
+        RemoteLog.log(TAG, "Upstream SOCKS: " + addr.getHostAddress() + ":" + port);
+    }
+
+    /**
      * TUNNEL mode (route-via-ZT=true): ALL traffic goes through VPN tunnel unprotected.
      * BYPASS mode (route-via-ZT=false): split horizon — ZT subnets through tunnel,
      *              internet via protect+bind to upstream.
@@ -143,26 +156,82 @@ public class TetherBridge implements TetherDetector.Listener, UpstreamSelector.L
 
     /**
      * Create and connect a TCP socket to the given destination.
-     * TUNNEL: all destinations go through VPN (unprotected).
+     * TUNNEL: chain through upstream SOCKS5 on exit node.
      * BYPASS: ZT subnets unprotected, everything else protect+bind.
      */
     public Socket connectUpstream(InetAddress host, int port) throws Exception {
-        Socket socket;
-        if (socketMode == SocketMode.TUNNEL) {
-            // All traffic through VPN tunnel
-            socket = new Socket();
+        if (socketMode == SocketMode.TUNNEL && upstreamSocksAddr != null) {
+            // Chain through exit node SOCKS5
+            return connectViaSocks5(host, port);
+        } else if (socketMode == SocketMode.BYPASS && !isZtSubnet(host)) {
+            Socket socket = new Socket();
+            protectSocket(socket);
+            upstream.bindSocket(socket);
+            socket.connect(new InetSocketAddress(host, port), 10000);
+            return socket;
         } else {
-            // Split horizon: ZT subnets through tunnel, internet via bypass
-            if (isZtSubnet(host)) {
-                socket = new Socket();
-            } else {
-                socket = new Socket();
-                protectSocket(socket);
-                upstream.bindSocket(socket);
-            }
+            // Direct connection (ZT subnet in BYPASS mode, or fallback)
+            Socket socket = new Socket();
+            socket.connect(new InetSocketAddress(host, port), 10000);
+            return socket;
         }
-        socket.connect(new InetSocketAddress(host, port), 10000);
+    }
+
+    /** Connect to destination via the upstream SOCKS5 proxy (RFC 1928). */
+    private Socket connectViaSocks5(InetAddress host, int port) throws Exception {
+        Socket socket = new Socket();
+        socket.connect(new InetSocketAddress(upstreamSocksAddr, upstreamSocksPort), 10000);
+
+        var out = socket.getOutputStream();
+        var in = socket.getInputStream();
+
+        // SOCKS5 greeting: version=5, 1 method, no-auth
+        out.write(new byte[]{0x05, 0x01, 0x00});
+        out.flush();
+
+        // Server response: version, method
+        byte[] resp = new byte[2];
+        readFully(in, resp);
+        if (resp[0] != 0x05 || resp[1] != 0x00) {
+            socket.close();
+            throw new IOException("SOCKS5 auth rejected");
+        }
+
+        // CONNECT request
+        byte[] addr = host.getAddress();
+        byte[] req = new byte[4 + addr.length + 2];
+        req[0] = 0x05; // version
+        req[1] = 0x01; // CONNECT
+        req[2] = 0x00; // reserved
+        req[3] = (addr.length == 4) ? (byte) 0x01 : (byte) 0x04; // IPv4 or IPv6
+        System.arraycopy(addr, 0, req, 4, addr.length);
+        req[req.length - 2] = (byte) ((port >> 8) & 0xFF);
+        req[req.length - 1] = (byte) (port & 0xFF);
+        out.write(req);
+        out.flush();
+
+        // CONNECT response
+        byte[] connResp = new byte[4];
+        readFully(in, connResp);
+        if (connResp[1] != 0x00) {
+            socket.close();
+            throw new IOException("SOCKS5 CONNECT failed: " + (connResp[1] & 0xFF));
+        }
+        // Skip bound address
+        if (connResp[3] == 0x01) { in.skip(4 + 2); }
+        else if (connResp[3] == 0x04) { in.skip(16 + 2); }
+        else if (connResp[3] == 0x03) { int len = in.read(); in.skip(len + 2); }
+
         return socket;
+    }
+
+    private static void readFully(java.io.InputStream in, byte[] buf) throws IOException {
+        int off = 0;
+        while (off < buf.length) {
+            int n = in.read(buf, off, buf.length - off);
+            if (n < 0) throw new IOException("EOF");
+            off += n;
+        }
     }
 
     /**

@@ -44,6 +44,11 @@ public class TunTapAdapter implements VirtualNetworkFrameListener {
     private Thread receiveThread;
     private ParcelFileDescriptor vpnSocket;
     private boolean nativeTxActive = false;
+    private ngo.xnet.vpn.tether.TetherL3Bridge tetherL3Bridge;
+
+    public void setTetherL3Bridge(ngo.xnet.vpn.tether.TetherL3Bridge bridge) {
+        this.tetherL3Bridge = bridge;
+    }
 
     public void setNativeTxActive(boolean active) { this.nativeTxActive = active; }
 
@@ -187,6 +192,13 @@ public class TunTapAdapter implements VirtualNetworkFrameListener {
     private long txTotalNs;
 
     private void handleIPv4Packet(byte[] buffer, int length) {
+        // L3 bridge: intercept tether-subnet packets and inject into ZT
+        if (tetherL3Bridge != null && tetherL3Bridge.isActive()) {
+            if (tetherL3Bridge.processOutbound(buffer, length)) {
+                return; // Handled by L3 bridge, don't process further
+            }
+        }
+
         // Tether traffic tracking — identify packets from/to tether subnets
         var natEngine = this.ztService.getNatEngine();
         if (natEngine != null) {

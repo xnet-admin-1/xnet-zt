@@ -938,6 +938,24 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
                 }
             }
             builder.addRoute(InetAddress.getByName("224.0.0.0"), 4);
+
+            // Add common tether subnet routes so tether traffic enters TUN
+            // These are the standard Android tethering subnets
+            builder.addRoute(InetAddress.getByName("192.168.42.0"), 24);  // USB
+            builder.addRoute(InetAddress.getByName("192.168.43.0"), 24);  // WiFi hotspot
+            builder.addRoute(InetAddress.getByName("192.168.44.0"), 24);  // WiFi hotspot alt
+            builder.addRoute(InetAddress.getByName("192.168.49.0"), 24);  // WiFi hotspot alt
+            // Dynamic tether subnets (ncm0 etc)
+            if (tetherBridge != null) {
+                for (var iface : tetherBridge.getDetector().getActiveInterfaces()) {
+                    byte[] addr = iface.address.getAddress();
+                    int mask = iface.prefixLength == 0 ? 0 : (0xFFFFFFFF << (32 - iface.prefixLength));
+                    int subnet = (((addr[0] & 0xFF) << 24) | ((addr[1] & 0xFF) << 16)
+                            | ((addr[2] & 0xFF) << 8) | (addr[3] & 0xFF)) & mask;
+                    byte[] subnetBytes = {(byte)(subnet>>24), (byte)(subnet>>16), (byte)(subnet>>8), (byte)subnet};
+                    builder.addRoute(InetAddress.getByAddress(subnetBytes), iface.prefixLength);
+                }
+            }
         } catch (Exception e) {
             this.eventBus.post(new VPNErrorEvent(e.getLocalizedMessage()));
             return false;
@@ -993,6 +1011,9 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
             }
             tetherBridge.setZtRoutes(ztRoutes);
         }
+
+        // Configure L3 bridge for tether traffic → ZT
+        configureTetherL3Bridge();
         try { Node.setTunFd(this.vpnSocket.getFd()); } catch (Exception e) { Log.w(TAG, "setTunFd: " + e); }
         try {
             long mac = virtualNetworkConfig.getMac();
@@ -1282,6 +1303,103 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
     /** Get the NatEngine for use by TunTapAdapter packet processing. */
     public NatEngine getNatEngine() { return natEngine; }
     public TetherBridge getTetherBridge() { return tetherBridge; }
+
+    private ngo.xnet.vpn.tether.TetherL3Bridge tetherL3Bridge;
+
+    private void configureTetherL3Bridge() {
+        try {
+            if (tetherBridge == null || tetherBridge.getSocketMode() != TetherBridge.SocketMode.TUNNEL) {
+                return;
+            }
+            var config = getVirtualNetworkConfig(tunTapAdapter != null ?
+                    tunTapAdapter.getRouteMap().values().stream().findFirst().orElse(0L) : 0L);
+            if (config == null) return;
+
+            long localMac = config.getMac();
+            java.net.InetAddress localZtIp = null;
+            for (var addr : config.getAssignedAddresses()) {
+                if (addr.getAddress() instanceof java.net.Inet4Address) {
+                    localZtIp = addr.getAddress();
+                    break;
+                }
+            }
+            if (localZtIp == null) return;
+
+            // Find gateway MAC — use the route's gateway IP and resolve via ARP
+            // For now, use the exit node's known ZT IP to find its MAC
+            long gatewayMac = 0;
+            java.net.InetAddress gatewayIp = null;
+            for (var route : tunTapAdapter.getRouteMap().keySet()) {
+                if (route.getGateway() != null) {
+                    gatewayIp = route.getGateway();
+                    break;
+                }
+            }
+
+            // Get gateway MAC from ARP table (it should be populated after tunnel is up)
+            if (gatewayIp != null) {
+                // Send ARP request to populate, then use it
+                // For immediate use, we'll resolve on first packet
+                gatewayMac = 0xFF_FF_FF_FF_FF_FFL; // broadcast initially, will be resolved
+            }
+
+            // Get tether subnet from detector
+            var ifaces = tetherBridge.getDetector().getActiveInterfaces();
+            java.net.InetAddress tetherAddr = null;
+            int tetherPrefix = 24;
+            if (!ifaces.isEmpty()) {
+                var iface = ifaces.get(0);
+                tetherAddr = iface.address;
+                tetherPrefix = iface.prefixLength;
+            }
+
+            if (tetherAddr == null) {
+                // Will configure when tether becomes active
+                tetherBridge.addStateListener((state, interfaces) -> {
+                    if (state == TetherBridge.State.ACTIVE && !interfaces.isEmpty()) {
+                        configureTetherL3Bridge();
+                    }
+                });
+                return;
+            }
+
+            // Compute subnet address
+            byte[] subnetBytes = tetherAddr.getAddress();
+            int mask = tetherPrefix == 0 ? 0 : (0xFFFFFFFF << (32 - tetherPrefix));
+            int subnetInt = ((subnetBytes[0] & 0xFF) << 24) | ((subnetBytes[1] & 0xFF) << 16)
+                    | ((subnetBytes[2] & 0xFF) << 8) | (subnetBytes[3] & 0xFF);
+            subnetInt &= mask;
+            subnetBytes[0] = (byte) ((subnetInt >> 24) & 0xFF);
+            subnetBytes[1] = (byte) ((subnetInt >> 16) & 0xFF);
+            subnetBytes[2] = (byte) ((subnetInt >> 8) & 0xFF);
+            subnetBytes[3] = (byte) (subnetInt & 0xFF);
+            java.net.InetAddress subnetAddr = java.net.InetAddress.getByAddress(subnetBytes);
+
+            // Use gateway MAC from ARP or broadcast (will be resolved on first frame)
+            // The ZT node will handle ARP resolution if we send to broadcast
+            // Better: use the gateway IP's MAC if known
+            if (gatewayIp != null && gatewayMac == 0xFF_FF_FF_FF_FF_FFL) {
+                // We'll use the gateway IP — TunTapAdapter's ARP table may have it
+                // For now use broadcast; the exit node should accept it
+                // Actually: send to the gateway's MAC. Let's look it up from the network config
+                // The exit node's MAC can be found after first ARP exchange
+                // Use ff:ff:ff:ff:ff:ff — ZT will deliver to all peers, gateway will respond
+                gatewayMac = 0xFF_FF_FF_FF_FF_FFL;
+            }
+
+            tetherL3Bridge = new ngo.xnet.vpn.tether.TetherL3Bridge();
+            tetherL3Bridge.configure(node, config.getNwid(), localMac, gatewayMac,
+                    localZtIp, subnetAddr, tetherPrefix, null);
+            tunTapAdapter.setTetherL3Bridge(tetherL3Bridge);
+
+            ngo.xnet.vpn.util.RemoteLog.log(TAG, "L3 bridge configured: ztIp=" + localZtIp.getHostAddress()
+                    + " gw=" + (gatewayIp != null ? gatewayIp.getHostAddress() : "none")
+                    + " tether=" + subnetAddr.getHostAddress() + "/" + tetherPrefix);
+        } catch (Exception e) {
+            Log.w(TAG, "L3 bridge config failed", e);
+            ngo.xnet.vpn.util.RemoteLog.log(TAG, "L3 bridge FAILED: " + e.getMessage());
+        }
+    }
 
     /** Aggregate bytes from all tether proxy services + NatEngine. */
     public long getTetherBytesTransferred() {

@@ -1066,6 +1066,7 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
         var networkConfig = network.getNetworkConfig();
         var virtualNetworkConfig = getVirtualNetworkConfig(network.getNetworkId());
         var dnsMode = DNSMode.fromInt(networkConfig.getDnsMode());
+        boolean routeViaZt = networkConfig.getRouteViaZeroTier();
 
         switch (dnsMode) {
             case NETWORK_DNS:
@@ -1097,6 +1098,11 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
                 }
                 break;
             default:
+                if (routeViaZt) {
+                    try {
+                        builder.addDnsServer(InetAddress.getByName("10.121.21.117"));
+                    } catch (Exception ignored) {}
+                }
                 break;
         }
     }

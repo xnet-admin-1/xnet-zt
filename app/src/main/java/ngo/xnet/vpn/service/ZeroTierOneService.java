@@ -934,30 +934,11 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
                             route.setGateway(via.getAddress());
                         }
                         this.tunTapAdapter.addRouteAndNetwork(route, networkId);
+                        ngo.xnet.vpn.util.RemoteLog.log(TAG, "Route: " + viaAddress.getHostAddress() + "/" + targetPort + (via != null ? " gw=" + via.getAddress().getHostAddress() : ""));
                     }
                 }
             }
             builder.addRoute(InetAddress.getByName("224.0.0.0"), 4);
-
-            // When route-via-ZT is enabled, ensure ALL traffic goes through tunnel
-            if (isRouteViaZeroTier) {
-                builder.addRoute(InetAddress.getByName("0.0.0.0"), 0);
-                // Add default route to TunTapAdapter with exit node as gateway
-                // so internet-bound packets get forwarded to the gateway MAC
-                InetAddress defaultGateway = null;
-                for (var routeConfig : virtualNetworkConfig.getRoutes()) {
-                    var via = routeConfig.getVia();
-                    if (via != null) {
-                        defaultGateway = via.getAddress();
-                        break;
-                    }
-                }
-                if (defaultGateway != null) {
-                    Route defaultRoute = new Route(InetAddress.getByName("0.0.0.0"), 0);
-                    defaultRoute.setGateway(defaultGateway);
-                    this.tunTapAdapter.addRouteAndNetwork(defaultRoute, networkId);
-                }
-            }
         } catch (Exception e) {
             this.eventBus.post(new VPNErrorEvent(e.getLocalizedMessage()));
             return false;

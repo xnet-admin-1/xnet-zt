@@ -269,6 +269,12 @@ public class TunTapAdapter implements VirtualNetworkFrameListener {
             var destRoute = InetAddressUtils.addressToRouteNo0Route(destIP, cachedCidr);
             var sourceRoute = InetAddressUtils.addressToRouteNo0Route(sourceIP, cachedCidr);
             if (!Objects.equals(destRoute, sourceRoute)) destIP = gateway;
+        } else if (route == null) {
+            // No route at all — packet will be dropped
+            if ((txCount & 1023) == 0) {
+                ngo.xnet.vpn.util.RemoteLog.log(TAG, "NO ROUTE for " + destIP.getHostAddress() + " routeMap size=" + routeMap.size());
+            }
+            return;
         }
 
         if (this.arpTable.hasMacForAddress(destIP)) {
@@ -285,6 +291,9 @@ public class TunTapAdapter implements VirtualNetworkFrameListener {
             }
         } else {
             // ARP needed - use full path
+            if ((txCount & 255) == 0) {
+                ngo.xnet.vpn.util.RemoteLog.log(TAG, "ARP needed for " + destIP.getHostAddress());
+            }
             byte[] pkt = java.util.Arrays.copyOf(buffer, length);
             handleIPv4PacketArp(pkt, destIP);
         }

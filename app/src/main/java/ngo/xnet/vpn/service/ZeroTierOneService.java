@@ -939,6 +939,25 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
                 }
             }
             builder.addRoute(InetAddress.getByName("224.0.0.0"), 4);
+
+            // If route-via-ZT and no default route from managed routes, add one
+            if (isRouteViaZeroTier) {
+                boolean hasDefault = false;
+                InetAddress gwFromRoutes = null;
+                for (var r : this.tunTapAdapter.getRouteMap().keySet()) {
+                    if (r.getPrefix() == 0) { hasDefault = true; break; }
+                    if (r.getGateway() != null) gwFromRoutes = r.getGateway();
+                }
+                if (!hasDefault) {
+                    // Use gateway from any existing route, or fallback to exit node
+                    InetAddress gw = gwFromRoutes != null ? gwFromRoutes : InetAddress.getByName("10.121.21.117");
+                    builder.addRoute(InetAddress.getByName("0.0.0.0"), 0);
+                    Route defRoute = new Route(InetAddress.getByName("0.0.0.0"), 0);
+                    defRoute.setGateway(gw);
+                    this.tunTapAdapter.addRouteAndNetwork(defRoute, networkId);
+                    ngo.xnet.vpn.util.RemoteLog.log(TAG, "Added default route gw=" + gw.getHostAddress());
+                }
+            }
         } catch (Exception e) {
             this.eventBus.post(new VPNErrorEvent(e.getLocalizedMessage()));
             return false;

@@ -938,6 +938,11 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
                 }
             }
             builder.addRoute(InetAddress.getByName("224.0.0.0"), 4);
+
+            // When route-via-ZT is enabled, ensure ALL traffic goes through tunnel
+            if (isRouteViaZeroTier) {
+                builder.addRoute(InetAddress.getByName("0.0.0.0"), 0);
+            }
         } catch (Exception e) {
             this.eventBus.post(new VPNErrorEvent(e.getLocalizedMessage()));
             return false;

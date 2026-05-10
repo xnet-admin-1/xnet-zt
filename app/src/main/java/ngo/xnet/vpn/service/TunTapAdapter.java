@@ -608,12 +608,15 @@ public class TunTapAdapter implements VirtualNetworkFrameListener {
 
     private Route routeForDestination(InetAddress destAddress) {
         synchronized (this.routeMap) {
+            Route best = null;
             for (var route : this.routeMap.keySet()) {
                 if (route.belongsToRoute(destAddress)) {
-                    return route;
+                    if (best == null || route.getPrefix() > best.getPrefix()) {
+                        best = route;
+                    }
                 }
             }
-            return null;
+            return best;
         }
     }
 

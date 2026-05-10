@@ -26,8 +26,8 @@ android {
         applicationId "ngo.xnet.vpn"
         minSdk 24
         targetSdk 34
-        versionCode 251
-        versionName "2.5.1"
+        versionCode 252
+        versionName "2.5.2"
         multiDexEnabled true
 
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'

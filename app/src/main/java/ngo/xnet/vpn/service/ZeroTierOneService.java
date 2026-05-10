@@ -938,24 +938,6 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
                 }
             }
             builder.addRoute(InetAddress.getByName("224.0.0.0"), 4);
-
-            // Add common tether subnet routes so tether traffic enters TUN
-            // These are the standard Android tethering subnets
-            builder.addRoute(InetAddress.getByName("192.168.42.0"), 24);  // USB
-            builder.addRoute(InetAddress.getByName("192.168.43.0"), 24);  // WiFi hotspot
-            builder.addRoute(InetAddress.getByName("192.168.44.0"), 24);  // WiFi hotspot alt
-            builder.addRoute(InetAddress.getByName("192.168.49.0"), 24);  // WiFi hotspot alt
-            // Dynamic tether subnets (ncm0 etc)
-            if (tetherBridge != null) {
-                for (var iface : tetherBridge.getDetector().getActiveInterfaces()) {
-                    byte[] addr = iface.address.getAddress();
-                    int mask = iface.prefixLength == 0 ? 0 : (0xFFFFFFFF << (32 - iface.prefixLength));
-                    int subnet = (((addr[0] & 0xFF) << 24) | ((addr[1] & 0xFF) << 16)
-                            | ((addr[2] & 0xFF) << 8) | (addr[3] & 0xFF)) & mask;
-                    byte[] subnetBytes = {(byte)(subnet>>24), (byte)(subnet>>16), (byte)(subnet>>8), (byte)subnet};
-                    builder.addRoute(InetAddress.getByAddress(subnetBytes), iface.prefixLength);
-                }
-            }
         } catch (Exception e) {
             this.eventBus.post(new VPNErrorEvent(e.getLocalizedMessage()));
             return false;
@@ -1165,6 +1147,11 @@ public class ZeroTierOneService extends VpnService implements Runnable, EventLis
             tetherConfig = new TetherConfig(this);
             if (!tetherConfig.isEnabled()) {
                 Log.i(TAG, "Tether services disabled in config");
+                return;
+            }
+
+            // Don't restart if already running
+            if (tetherBridge != null && tetherBridge.getState() != TetherBridge.State.IDLE) {
                 return;
             }
 

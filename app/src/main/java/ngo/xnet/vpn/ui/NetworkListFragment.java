@@ -86,6 +86,13 @@ public class NetworkListFragment extends Fragment {
     public static final String TAG = "NetworkListFragment";
     private final EventBus eventBus;
     private final List<Network> mNetworks = new ArrayList<>();
+    private final android.os.Handler tetherHandler = new android.os.Handler(android.os.Looper.getMainLooper());
+    private final Runnable tetherRefresh = new Runnable() {
+        @Override public void run() {
+            if (getView() != null) updateTetherCard(getView());
+            tetherHandler.postDelayed(this, 2000);
+        }
+    };
     boolean mIsBound = false;
     private RecyclerViewAdapter recyclerViewAdapter;
     private RecyclerView recyclerView;
@@ -219,6 +226,7 @@ public class NetworkListFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+        tetherHandler.removeCallbacks(tetherRefresh);
         this.eventBus.unregister(this);
     }
 
@@ -343,6 +351,7 @@ public class NetworkListFragment extends Fragment {
         this.eventBus.post(new NetworkListRequestEvent());
         this.eventBus.post(new NodeStatusRequestEvent());
         if (getView() != null) updateTetherCard(getView());
+        tetherHandler.postDelayed(tetherRefresh, 2000);
     }
 
     @Override
